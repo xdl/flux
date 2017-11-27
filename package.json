@@ -1,0 +1,11 @@
+{
+  "name": "flux",
+  "scripts": {
+    "build-demo": "scripts/build_demo.sh",
+    "dev": "node devserver.js"
+  },
+  "devDependencies": {
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.5"
+  }
+}
