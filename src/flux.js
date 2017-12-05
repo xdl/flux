@@ -1,18 +1,37 @@
 const INKSCAPE_TITLE_TAG = 'title'
-const Library = (svg) => {
+//Node, {x, y, width, height, bottom, top, left, right}
+const DisplayObject = (dom_node, dom_rect, container_width, container_height) => {
+  //zero the node:
+  //dom_node.setAttribute('transform', `translate(${-dom_rect.x}, ${-dom_rect.y})`)
+  //dom_node.setAttribute('transform', `translate(${-dom_rect.x}, 0)`)
+  dom_node.setAttribute('transform', `translate(${-dom_rect.x + 207}, 0)`)
+  console.log("-dom_rect.x + 207: ", -dom_rect.x + 207);
+  return {
+    node: dom_node,
+    dom_rect
+  }
+}
+const Library = (inkscape_container) => {
   const directory = {}
-  const title_elements = Array.prototype.slice.call(svg.getElementsByTagName(INKSCAPE_TITLE_TAG))
+  //needs to be in pixels for now
+  const width = inkscape_container.getAttribute('width')
+  const height = inkscape_container.getAttribute('height')
+  const title_elements = Array.prototype.slice.call(inkscape_container.getElementsByTagName(INKSCAPE_TITLE_TAG))
   for (const title of title_elements) {
     const name = title.innerHTML
     directory[name] = () => {
-      return title.parentNode
+      return DisplayObject(
+        title.parentNode.cloneNode(),
+        title.parentNode.getBoundingClientRect(),
+        width,
+        height
+      )
     }
   }
   return directory
 }
 
-const createStage = (library_element) => {
-  const inkscape_container = library_element.contentDocument.firstElementChild
+const createStage = (inkscape_container) => {
   const attributes = [
     ['viewBox', inkscape_container.getAttribute('viewBox')],
     ['width', inkscape_container.getAttribute('width')],
@@ -26,11 +45,11 @@ const createStage = (library_element) => {
   return stage
 }
 
-const Stage = (dom, library_element) => {
-  const stage = createStage(library_element)
+const Stage = (dom, inkscape_container) => {
+  const stage = createStage(inkscape_container)
   dom.appendChild(stage)
   const addChild = (element) => {
-    stage.appendChild(element)
+    stage.appendChild(element.node)
   }
   return {
     addChild
@@ -38,13 +57,11 @@ const Stage = (dom, library_element) => {
   }
 }
 
-const getTitleElements = (inkscape_contents) => {
-}
-
 module.exports = {
   init: (stage_element, library_element, callback) => {
-    const stage = Stage(stage_element, library_element)
-    const library = Library(library_element.contentDocument)
+    const inkscape_container = library_element.contentDocument.firstElementChild
+    const stage = Stage(stage_element, inkscape_container)
+    const library = Library(inkscape_container)
     return callback(stage, library)
   }
 }
