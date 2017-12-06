@@ -10,8 +10,9 @@ window.init = () => {
     //stage.addChild(apps)
     stage.addChild(square)
     stage.addChild(triangle_grouped)
-    console.log("triangle_grouped.dom_rect: ", triangle_grouped.dom_rect);
+    //console.log("triangle_grouped.dom_rect: ", triangle_grouped.dom_rect);
     stage.addChild(triangle)
     //console.log("square.dom_rect: ", square.dom_rect);
+    //console.log("square.getCoords(): ", square.getCoords());
   })
 }
