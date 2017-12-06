@@ -1,62 +1,46 @@
-function convertCoords(dom_node) {
-
-  var offset = dom_node.getBoundingClientRect();
-  var matrix = dom_node.getScreenCTM();
-  var x = offset.x
-  var y = offset.y
-
-  return {
-    x: (matrix.a * x) + (matrix.c * y) + matrix.e - offset.left,
-    y: (matrix.b * x) + (matrix.d * y) + matrix.f - offset.top
-  };
-}
-
 const INKSCAPE_TITLE_TAG = 'title'
 //Node, {x, y, width, height, bottom, top, left, right}
-const DisplayObject = (dom_node, dom_rect, container_width, container_height) => {
-  //zero the node:
-  //dom_node.setAttribute('transform', `translate(${-dom_rect.x}, ${-dom_rect.y})`)
-  
-  //can't see it
-  //dom_node.setAttribute('transform', `translate(${-dom_rect.x}, 0)`)
-
-  //doesn't do anything
-  //dom_node.setAttribute('transform', `translate(0, 0)`)
-
-  //doesn't do anything
-  //dom_node.setAttribute('transform', `translate(${-74}, 0)`)
-
-  //dom_node.setAttribute('transform', `translate(${-dom_rect.x + 207}, 0)`)
-  //console.log("-dom_rect.x + 207: ", -dom_rect.x + 207);
+const DisplayObject = (node, rect) => {
+  let _x = 0
+  let _y = 0
+  const _applyAttributes = () => {
+    node.setAttribute('transform', `translate(${-rect.x + _x}, ${-rect.y + _y})`)
+  }
+  //init
+  _applyAttributes()
   return {
-    node: dom_node,
-    dom_rect,
-    getCoords: () => {
-      return convertCoords(dom_node)
+    node, //for Library
+
+    x: _x,
+    get x() {
+      return _x
+    },
+    set x(__x) {
+      _x = __x
+      _applyAttributes()
+    },
+
+    y: _y,
+    get y() {
+      return _y
+    },
+    set y(__y) {
+      _y = __y
+      _applyAttributes()
     }
   }
 }
 
 const Library = (inkscape_container) => {
   const directory = {}
-  //needs to be in pixels for now
-  const width = inkscape_container.getAttribute('width')
-  const height = inkscape_container.getAttribute('height')
   const title_elements = Array.prototype.slice.call(inkscape_container.getElementsByTagName(INKSCAPE_TITLE_TAG))
-  //console.log("inkscape_container.getScreenCTM(): ", inkscape_container.getScreenCTM());
   for (const title of title_elements) {
     const name = title.innerHTML
     const elem = title.parentNode
-    //console.log("elem.getScreenCTM(): ", elem.getScreenCTM());
-    //console.log("elem.getBBox(): ", elem.getBBox());
-    //console.log("elem.getBoundingClientRect(): ", elem.getBoundingClientRect());
     directory[name] = () => {
       return DisplayObject(
-        elem.cloneNode(),
-        //elem.getBBox(),
-        elem.getBoundingClientRect(),
-        width,
-        height
+        elem.cloneNode(true),
+        elem.getBBox()
       )
     }
   }
@@ -65,11 +49,12 @@ const Library = (inkscape_container) => {
 
 const createStage = (inkscape_container) => {
   const viewBox = inkscape_container.getAttribute('viewBox')
-  console.log("viewBox: ", viewBox);
+  const stageWidth = inkscape_container.getAttribute('width')
+  const stageHeight = inkscape_container.getAttribute('height')
   const attributes = [
     ['viewBox', viewBox],
-    ['width', inkscape_container.getAttribute('width')],
-    ['height', inkscape_container.getAttribute('height')]
+    ['width', stageWidth],
+    ['height', stageHeight]
   ]
   const ns = "http://www.w3.org/2000/svg"
   const stage = document.createElementNS(ns, "svg")
@@ -82,13 +67,15 @@ const createStage = (inkscape_container) => {
 const Stage = (dom, inkscape_container) => {
   const stage = createStage(inkscape_container)
   dom.appendChild(stage)
-  console.log("stage.getScreenCTM(): ", stage.getScreenCTM());
   const addChild = (element) => {
     stage.appendChild(element.node)
   }
+  const removeChild = (element) => {
+    stage.removeChild(element.node)
+  }
   return {
-    addChild
-    //removeChild
+    addChild,
+    removeChild
   }
 }
 
