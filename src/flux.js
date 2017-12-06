@@ -31,15 +31,22 @@ const DisplayObject = (node, rect) => {
   }
 }
 
+//Does a deep clone, then recursively resolves <use> tags
+const deepClone = (elem, inkscape_container) => {
+  const clone = elem.cloneNode(true)
+  return clone
+}
+
 const Library = (inkscape_container) => {
   const directory = {}
+  const ids = {}
   const title_elements = Array.prototype.slice.call(inkscape_container.getElementsByTagName(INKSCAPE_TITLE_TAG))
   for (const title of title_elements) {
     const name = title.innerHTML
     const elem = title.parentNode
     directory[name] = () => {
       return DisplayObject(
-        elem.cloneNode(true),
+        deepClone(elem, inkscape_container),
         elem.getBBox()
       )
     }

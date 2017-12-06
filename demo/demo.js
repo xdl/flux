@@ -6,8 +6,8 @@ window.init = () => {
     //const circle = library.Circle()
     //const triangle = library.Triangle()
     //const triangle_grouped = library.TriangleGrouped()
-    const apps = library.apps()
-    stage.addChild(apps)
+    //const apps = library.apps()
+    //stage.addChild(apps)
 
     //const simpletext = library.Simpletext()
     //stage.addChild(simpletext)
@@ -20,5 +20,9 @@ window.init = () => {
     //triangle.y = 1
     //console.log("square.dom_rect: ", square.dom_rect);
     //console.log("square.getCoords(): ", square.getCoords());
+    //
+    
+    const group_with_clone = library.GroupWithClone()
+    stage.addChild(group_with_clone)
   })
 }
