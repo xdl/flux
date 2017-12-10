@@ -1,4 +1,4 @@
-const flux = require('../src/flux.js')
+const flux = require('../src/flux2.js')
 
 window.init = () => {
   flux.init(document.getElementById('stage'), document.getElementById('assets'), (stage, library) => {
