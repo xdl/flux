@@ -24,6 +24,7 @@ const DisplayObject = (dom_node, bbox) => {
 
   return {
     _node: dom_node,
+    _children: children,
     get x() {
       return x
     },
@@ -50,12 +51,24 @@ const DisplayObject = (dom_node, bbox) => {
   }
 }
 
-const buildUseString = (elem) => {
-  return `<use 
-    x=0
-    y=0
-    xlink:href='#${elem.id}'
-  />`
+
+const instantiateNode = (elem) => {
+  //Use string strategy:
+  //const buildUseString = (e) => {
+    //return `<use 
+      //x=0
+      //y=0
+      //xlink:href='#${e.id}'
+    ///>`
+  //}
+  //const use_string = buildUseString(elem)
+  //scratchpad_node.insertAdjacentHTML('afterbegin', use_string)
+  //const node = scratchpad_node.children[0]
+  //scratchpad_node.removeChild(node)
+
+  //deep clone strategy
+  const clone = elem.cloneNode(true)
+  return clone
 }
 
 const Library = (inkscape_container, scratchpad_node) => {
@@ -65,10 +78,7 @@ const Library = (inkscape_container, scratchpad_node) => {
     const name = title.innerHTML
     const elem = title.parentNode
     directory[name] = () => {
-      const use_string = buildUseString(elem)
-      scratchpad_node.insertAdjacentHTML('afterbegin', use_string)
-      const node = scratchpad_node.children[0]
-      scratchpad_node.removeChild(node)
+      const node = instantiateNode(elem)
       return DisplayObject(node, elem.getBBox())
     }
   }
@@ -93,15 +103,33 @@ const createStageNode = (inkscape_container) => {
 
 augmentWithHints = (display_object) => {
 
-  let _enableHints = true
+  //init
+  let enableHints = true
 
+  display_object.addEventListener('click', () => {
+    //do a tree search
+    const to_visit = [display_object]
+    while (to_visit.length > 0) {
+      const visiting = to_visit.pop()
+      for (const child of visiting._children) {
+        if (child.buttonMode) {
+          console.log("toggling this guy!");
+        }
+        to_visit.push(child)
+      }
+    }
+    const fadeyElement = document.getElementById('fadeyElement')
+    fadeyElement.classList.remove('fadey')
+    void fadeyElement.offsetWidth
+    fadeyElement.classList.add('fadey')
+  })
   return Object.assign({},
     display_object, {
       get enableHints() {
-        return _enableHints
+        return enableHints
       },
-      set enableHints(asd) {
-        _enableHints = asd
+      set enableHints(_enableHints) {
+        enableHints = _enableHints
       }
     })
 }
@@ -133,6 +161,18 @@ const fluxInit = (stage_element, inkscape_container) => {
 module.exports = {
   init: (stage_element, library_element, callback) => {
     const inkscape_container = library_element.contentDocument.firstElementChild
+
+    //adding some keyframe data:
+    //const style = document.createElement('style')
+    //style.type = 'text/css'
+    //const keyFrames = `
+      //@keyframes fadey {
+        //0%,100% { opacity: 0; }
+        //50% { opacity: 1; }
+      //}`;
+    //style.innerHTML = keyFrames
+    //document.getElementsByTagName('head')[0].appendChild(style)
+
     const {
       stage,
       library

@@ -29,6 +29,8 @@ window.init = () => {
     group_with_clone.addEventListener('click', () => {
       console.log("I have been clicked");
     })
-    console.log("stage.enableHints: ", stage.enableHints);
+    //console.log("stage.enableHints: ", stage.enableHints);
+    //
+    //Okay let's do nakama mockup again.
   })
 }
