@@ -8,7 +8,8 @@ const ASSETS_PORT = 8078
 //webpack-dev-server
 const dev_server = new WebpackDevServer(webpack(config), {
   contentBase: [
-    'dist/', //so it can find index.html
+    //'dist/',
+    'demo/' //use the index.html in demo/ for now
   ],
   proxy: {
     '/assets': `http://localhost:${ASSETS_PORT}` //static server

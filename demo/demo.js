@@ -1,4 +1,4 @@
-const flux = require('../src/flux2.js')
+const flux = require('../src/flux.js')
 
 window.init = () => {
   flux.init(document.getElementById('stage'), document.getElementById('assets'), (stage, library) => {
@@ -24,5 +24,10 @@ window.init = () => {
     
     const group_with_clone = library.GroupWithClone()
     stage.addChild(group_with_clone)
+    group_with_clone.x = 10
+    group_with_clone.buttonMode = true
+    group_with_clone.addEventListener('click', () => {
+      console.log("I have been clicked");
+    })
   })
 }

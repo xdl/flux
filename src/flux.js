@@ -1,60 +1,84 @@
 const INKSCAPE_TITLE_TAG = 'title'
-//Node, {x, y, width, height, bottom, top, left, right}
-const DisplayObject = (node, rect) => {
+const SVGNS = "http://www.w3.org/2000/svg"
+
+const DisplayObject = (dom_node, bbox) => {
+
+  const _children = []
+
+  //initial values
   let _x = 0
   let _y = 0
-  const _applyAttributes = () => {
-    node.setAttribute('transform', `translate(${-rect.x + _x}, ${-rect.y + _y})`)
-  }
-  //init
-  _applyAttributes()
-  return {
-    node, //for Library
+  let _buttonMode = false
 
+  const _styles = {
+  }
+
+  const _applyStyling = () => {
+    dom_node.style.cursor = _buttonMode ? 'pointer' : 'default'
+  }
+  const _applyTransformAttribute = () => {
+    dom_node.setAttribute('transform', `translate(${-bbox.x + _x}, ${-bbox.y + _y})`)
+  }
+
+  //init; normalise to zero
+  _applyTransformAttribute()
+
+  return {
+    _node: dom_node,
     x: _x,
     get x() {
       return _x
     },
     set x(__x) {
       _x = __x
-      _applyAttributes()
+      _applyTransformAttribute()
     },
-
-    y: _y,
-    get y() {
-      return _y
+    buttonMode: _buttonMode,
+    get buttonMode() {
+      return _buttonMode
     },
-    set y(__y) {
-      _y = __y
-      _applyAttributes()
+    set buttonMode(__buttonMode) {
+      _buttonMode = __buttonMode
+      _applyStyling()
+    },
+    addEventListener: (eventType, fn, useCapture = false) => {
+      dom_node.addEventListener(eventType, fn, useCapture)
+    },
+    addChild: (display_object) => {
+      if (true) { //check if do isn't already in that parent
+        _children.push(display_object)
+        dom_node.appendChild(display_object._node)
+      }
     }
   }
 }
 
-//Does a deep clone, then recursively resolves <use> tags
-const deepClone = (elem, inkscape_container) => {
-  const clone = elem.cloneNode(true)
-  return clone
+const buildUseString = (elem) => {
+  return `<use 
+    x=0
+    y=0
+    xlink:href='#${elem.id}'
+  />`
 }
 
-const Library = (inkscape_container) => {
+const Library = (inkscape_container, scratchpad_node) => {
   const directory = {}
-  const ids = {}
   const title_elements = Array.prototype.slice.call(inkscape_container.getElementsByTagName(INKSCAPE_TITLE_TAG))
   for (const title of title_elements) {
     const name = title.innerHTML
     const elem = title.parentNode
     directory[name] = () => {
-      return DisplayObject(
-        deepClone(elem, inkscape_container),
-        elem.getBBox()
-      )
+      const use_string = buildUseString(elem)
+      scratchpad_node.insertAdjacentHTML('afterbegin', use_string)
+      const node = scratchpad_node.children[0]
+      scratchpad_node.removeChild(node)
+      return DisplayObject(node, elem.getBBox())
     }
   }
   return directory
 }
 
-const createStage = (inkscape_container) => {
+const createStageNode = (inkscape_container) => {
   const viewBox = inkscape_container.getAttribute('viewBox')
   const stageWidth = inkscape_container.getAttribute('width')
   const stageHeight = inkscape_container.getAttribute('height')
@@ -63,34 +87,44 @@ const createStage = (inkscape_container) => {
     ['width', stageWidth],
     ['height', stageHeight]
   ]
-  const ns = "http://www.w3.org/2000/svg"
-  const stage = document.createElementNS(ns, "svg")
+  const stage_node = document.createElementNS(SVGNS, "svg")
   for (let attribute of attributes) {
-    stage.setAttribute(...attribute)
+    stage_node.setAttribute(...attribute)
   }
-  return stage
+  return stage_node
 }
 
-const Stage = (dom, inkscape_container) => {
-  const stage = createStage(inkscape_container)
-  dom.appendChild(stage)
-  const addChild = (element) => {
-    stage.appendChild(element.node)
+const fluxInit = (stage_element, inkscape_container) => {
+  const stage_node = createStageNode(inkscape_container)
+
+  //copy over layers to the stage element, then hide them
+  for (let i = 0; i < inkscape_container.children.length; i++) {
+    const child = inkscape_container.children[i]
+    if (child.tagName === 'g') {
+      const layer_clone = child.cloneNode(true)
+      layer_clone.style.display = 'none'
+      stage_node.appendChild(layer_clone)
+    }
   }
-  const removeChild = (element) => {
-    stage.removeChild(element.node)
-  }
+  stage_element.appendChild(stage_node)
+
+  //pass the first layer of the stage as a scratch pad for use_string initiation
+  const library = Library(inkscape_container, stage_node.children[0])
+  const stage = DisplayObject(stage_node, stage_node.getBBox())
+
   return {
-    addChild,
-    removeChild
+    stage,
+    library
   }
 }
 
 module.exports = {
   init: (stage_element, library_element, callback) => {
     const inkscape_container = library_element.contentDocument.firstElementChild
-    const stage = Stage(stage_element, inkscape_container)
-    const library = Library(inkscape_container)
+    const {
+      stage,
+      library
+    } = fluxInit(stage_element, inkscape_container)
     return callback(stage, library)
   }
 }
