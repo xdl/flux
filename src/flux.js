@@ -3,50 +3,47 @@ const SVGNS = "http://www.w3.org/2000/svg"
 
 const DisplayObject = (dom_node, bbox) => {
 
-  const _children = []
 
   //initial values
-  let _x = 0
-  let _y = 0
-  let _buttonMode = false
+  const children = []
 
-  const _styles = {
-  }
+  let x = 0
+  let y = 0
 
-  const _applyStyling = () => {
-    dom_node.style.cursor = _buttonMode ? 'pointer' : 'default'
+  let buttonMode = false
+
+  const applyStyling = () => {
+    dom_node.style.cursor = buttonMode ? 'pointer' : 'default'
   }
-  const _applyTransformAttribute = () => {
-    dom_node.setAttribute('transform', `translate(${-bbox.x + _x}, ${-bbox.y + _y})`)
+  const applyTransformAttribute = () => {
+    dom_node.setAttribute('transform', `translate(${-bbox.x + x}, ${-bbox.y + y})`)
   }
 
   //init; normalise to zero
-  _applyTransformAttribute()
+  applyTransformAttribute()
 
   return {
     _node: dom_node,
-    x: _x,
     get x() {
-      return _x
+      return x
     },
-    set x(__x) {
-      _x = __x
-      _applyTransformAttribute()
+    set x(_x) {
+      x = _x
+      applyTransformAttribute()
     },
-    buttonMode: _buttonMode,
     get buttonMode() {
-      return _buttonMode
+      return buttonMode
     },
-    set buttonMode(__buttonMode) {
-      _buttonMode = __buttonMode
-      _applyStyling()
+    set buttonMode(_buttonMode) {
+      buttonMode = _buttonMode
+      applyStyling()
     },
     addEventListener: (eventType, fn, useCapture = false) => {
       dom_node.addEventListener(eventType, fn, useCapture)
     },
     addChild: (display_object) => {
       if (true) { //check if do isn't already in that parent
-        _children.push(display_object)
+        children.push(display_object)
         dom_node.appendChild(display_object._node)
       }
     }
@@ -94,6 +91,21 @@ const createStageNode = (inkscape_container) => {
   return stage_node
 }
 
+augmentWithHints = (display_object) => {
+
+  let _enableHints = true
+
+  return Object.assign({},
+    display_object, {
+      get enableHints() {
+        return _enableHints
+      },
+      set enableHints(asd) {
+        _enableHints = asd
+      }
+    })
+}
+
 const fluxInit = (stage_element, inkscape_container) => {
   const stage_node = createStageNode(inkscape_container)
 
@@ -110,7 +122,7 @@ const fluxInit = (stage_element, inkscape_container) => {
 
   //pass the first layer of the stage as a scratch pad for use_string initiation
   const library = Library(inkscape_container, stage_node.children[0])
-  const stage = DisplayObject(stage_node, stage_node.getBBox())
+  const stage = augmentWithHints(DisplayObject(stage_node, stage_node.getBBox()))
 
   return {
     stage,
