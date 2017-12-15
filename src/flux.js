@@ -1,5 +1,6 @@
 const INKSCAPE_TITLE_TAG = 'title'
 const SVGNS = "http://www.w3.org/2000/svg"
+const SVGNSX = "http://www.w3.org/1999/xlink"
 
 const DisplayObject = (dom_node, bbox) => {
 
@@ -52,34 +53,82 @@ const DisplayObject = (dom_node, bbox) => {
 }
 
 
-const instantiateNode = (elem) => {
+const instantiateNode = (elem, scratchpad_node) => {
   //Use string strategy:
-  //const buildUseString = (e) => {
-    //return `<use 
-      //x=0
-      //y=0
-      //xlink:href='#${e.id}'
-    ///>`
-  //}
+  const buildUseString = (e) => {
+    return `<use 
+      x=0
+      y=0
+      xlink:href='#${e.id}'
+    />`
+  }
   //const use_string = buildUseString(elem)
   //scratchpad_node.insertAdjacentHTML('afterbegin', use_string)
   //const node = scratchpad_node.children[0]
   //scratchpad_node.removeChild(node)
+  const selfCloseUseNode = (n) => {
+    const htmlString  = n.outerHTML
+    console.log("htmlString: ", htmlString + 'asd');
+    scratchpad_node.insertAdjacentHTML('afterbegin', htmlString)
+    const node = scratchpad_node.children[0]
+    scratchpad_node.removeChild(node)
+    return node
+  }
+
+  const svgNode = (n) => {
+    var svgns = 'http://www.w3.org/2000/svg',
+      xlinkns = 'http://www.w3.org/1999/xlink',
+      use = document.createElementNS(svgns, 'use');
+
+    for (var i = 0; i < n.attributes.length; i++) {
+      var attrib = n.attributes[i];
+      if (attrib.specified) {
+        console.log(attrib.name + " = " + attrib.value);
+        if (attrib.name === 'xlink:href') {
+          use.setAttributeNS(xlinkns, attrib.name, attrib.value)
+        } else {
+          use.setAttributeNS(null, attrib.name, attrib.value)
+        }
+      }
+    }
+    //use.setAttributeNS(xlinkns, 'xlink:href', '#save')
+    //document.getElementById('useSVG').appendChild(use);
+    console.log("use: ", use);
+    return use
+    //return n
+  }
 
   //deep clone strategy
   const clone = elem.cloneNode(true)
+  //const visiting = [clone]
+
+  ////do a dfs to find and self-close the use nodes: <use ...></use> → <use .../>
+  //while (visiting.length > 0) {
+    //const node = visiting.pop()
+    //const children = Array.prototype.slice.call(node.children)
+    //for (const child of children) {
+      //if (child.tagName === 'use') {
+        //const selfClosedUseNode = selfCloseUseNode(child);
+        ////const selfClosedUseNode = svgNode(child);
+        //node.replaceChild(selfClosedUseNode, child)
+      //}
+      //visiting.push(child)
+    //}
+  //}
+  //const title_elements = Array.prototype.slice.call(inkscape_container.getElementsByTagName(INKSCAPE_TITLE_TAG))
   return clone
 }
 
-const Library = (inkscape_container, scratchpad_node) => {
+const Library = (inkscape_container, scratchpad_node, stage_node) => {
   const directory = {}
-  const title_elements = Array.prototype.slice.call(inkscape_container.getElementsByTagName(INKSCAPE_TITLE_TAG))
+  const title_elements = Array.prototype.slice.call(stage_node.getElementsByTagName(INKSCAPE_TITLE_TAG))
   for (const title of title_elements) {
     const name = title.innerHTML
     const elem = title.parentNode
     directory[name] = () => {
-      const node = instantiateNode(elem)
+      const node = instantiateNode(elem, scratchpad_node)
       return DisplayObject(node, elem.getBBox())
+      //return DisplayObject(elem, elem.getBBox())
     }
   }
   return directory
@@ -92,12 +141,18 @@ const createStageNode = (inkscape_container) => {
   const attributes = [
     ['viewBox', viewBox],
     ['width', stageWidth],
-    ['height', stageHeight]
+    ['height', stageHeight],
+    ['xmlns:x', SVGNSX]
   ]
   const stage_node = document.createElementNS(SVGNS, "svg")
-  for (let attribute of attributes) {
-    stage_node.setAttribute(...attribute)
-  }
+  //for (let attribute of attributes) {
+    //stage_node.setAttribute(...attribute)
+  //}
+  stage_node.setAttributeNS(null, 'viewBox', viewBox)
+  stage_node.setAttributeNS(null, 'width', stageWidth)
+  stage_node.setAttributeNS(null, 'height', stageHeight)
+  //stage_node.setAttribute('xmlns:x', SVGNSX)
+  //stage_node.setAttributeNS(SVGNSX, 'xmlns:x', SVGNSX)
   return stage_node
 }
 
@@ -144,12 +199,16 @@ const fluxInit = (stage_element, inkscape_container) => {
       const layer_clone = child.cloneNode(true)
       layer_clone.style.display = 'none'
       stage_node.appendChild(layer_clone)
+    } else if (child.tagName === 'defs') {
+    //} else {
+      const clone = child.cloneNode(true)
+      stage_node.appendChild(clone)
     }
   }
   stage_element.appendChild(stage_node)
 
   //pass the first layer of the stage as a scratch pad for use_string initiation
-  const library = Library(inkscape_container, stage_node.children[0])
+  const library = Library(inkscape_container, stage_node.children[0], stage_node)
   const stage = augmentWithHints(DisplayObject(stage_node, stage_node.getBBox()))
 
   return {

@@ -22,15 +22,17 @@ window.init = () => {
     //console.log("square.getCoords(): ", square.getCoords());
     //
     
-    const group_with_clone = library.GroupWithClone()
-    stage.addChild(group_with_clone)
-    group_with_clone.x = 10
-    group_with_clone.buttonMode = true
-    group_with_clone.addEventListener('click', () => {
-      console.log("I have been clicked");
-    })
+    //const group_with_clone = library.GroupWithClone()
+    //stage.addChild(group_with_clone)
+    //group_with_clone.x = 10
+    //group_with_clone.buttonMode = true
+    //group_with_clone.addEventListener('click', () => {
+      //console.log("I have been clicked");
+    //})
     //console.log("stage.enableHints: ", stage.enableHints);
     //
     //Okay let's do nakama mockup again.
+    const apps = library.apps()
+    stage.addChild(apps)
   })
 }
