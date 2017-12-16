@@ -1,0 +1,19 @@
+#+STARTUP: showall
+
+* PoC
+
+** DONE Get cloning to work
+   CLOSED: [2017-12-16 Sat 02:55]
+   Using ~.cloneNode~, but we'll also need to recursively resolve ~<use>~ tags
+
+* API
+
+** IN-PROGRESS Be able to refer to instances
+   e.g. ~library.apps().play_btn.addEventListener("click", () => {})~
+** DONE ~addEventListener~
+   CLOSED: [2017-12-16 Sat 02:55]
+   * Do the common events: 'click', 'mouseover', 'mouseout'
+
+* UX
+
+** IN-PROGRESS Marvel-esque clickbox

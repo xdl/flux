@@ -10,7 +10,7 @@ const config = {
   module: {
     rules: [{
       test: /\.js$/,
-      //I think this is the reason node_modules is excluded; it's the distributor's responsibility to transpile the dist version: https://github.com/cloverfield-tools/universal-react-boilerplate/issues/41
+      //I think this is the reason node_modules is excluded: it's the distributor's responsibility to transpile the dist version: https://github.com/cloverfield-tools/universal-react-boilerplate/issues/41
       exclude: /(node_modules)/,
       use: {
         loader: 'babel-loader',

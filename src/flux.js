@@ -2,11 +2,28 @@ const INKSCAPE_TITLE_TAG = 'title'
 const SVGNS = "http://www.w3.org/2000/svg"
 const SVGNSX = "http://www.w3.org/1999/xlink"
 
-const DisplayObject = (dom_node, bbox) => {
+const getInstances = (node) => {
+  const instances = {}
+  const title_elements = Array.prototype.slice.call(node.getElementsByTagName(INKSCAPE_TITLE_TAG))
+  for (const title of title_elements) {
+    const name = title.innerHTML
+    const elem = title.parentNode
+    if (elem.id !== node.id) { //stops the element of interest (the parent) from being instantiated again
+      const instance = DisplayObject(elem, elem.getBBox())
+      instances[name] = instance
+    }
+  }
+  return instances
+}
 
+const DisplayObject = (dom_node, bbox) => {
 
   //initial values
   const children = []
+  //Second use of the title element:
+  //2. As an exposed instance name in an instantiated class from the Library
+  const instances = getInstances(dom_node)
+  console.log("instances: ", instances);
 
   let x = 0
   let y = 0
@@ -60,6 +77,8 @@ const instantiateNode = (elem) => {
 
 const Library = (stage_node) => {
   const directory = {}
+  //First use of title elements:
+  //1. As a class that's been 'Export for Actionscript'd
   const title_elements = Array.prototype.slice.call(stage_node.getElementsByTagName(INKSCAPE_TITLE_TAG))
   for (const title of title_elements) {
     const name = title.innerHTML
@@ -147,7 +166,7 @@ module.exports = {
   init: (stage_element, library_element, callback) => {
     const inkscape_container = library_element.contentDocument.firstElementChild
 
-    //adding some keyframe data:
+    //adding some keyframe data. We'll need this when we don't want to manually do stuff to the index.html of the demo
     //const style = document.createElement('style')
     //style.type = 'text/css'
     //const keyFrames = `
