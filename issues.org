@@ -8,7 +8,10 @@
 
 * API
 
-** IN-PROGRESS Be able to refer to instances
+** DONE addChild, removeChild
+   CLOSED: [2017-12-16 Sat 19:56]
+** DONE Be able to refer to instances
+   CLOSED: [2017-12-16 Sat 19:40]
    e.g. ~library.apps().play_btn.addEventListener("click", () => {})~
 ** DONE ~addEventListener~
    CLOSED: [2017-12-16 Sat 02:55]
@@ -16,4 +19,6 @@
 
 * UX
 
-** IN-PROGRESS Marvel-esque clickbox
+** DONE Marvel-esque clickbox
+   CLOSED: [2017-12-16 Sat 19:40]
+   Can find better animation probably but it works

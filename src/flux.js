@@ -19,17 +19,19 @@ const getInstances = (node) => {
 const DisplayObject = (dom_node, bbox, name, as_instance = false) => {
 
   //initial values
-  const children = []
   //Second use of the title element:
   //2. As an exposed instance name in an instantiated class from the Library
   const instances = getInstances(dom_node)
+  const children = Object.keys(instances).map((instance_name) => {
+    return instances[instance_name]
+  })
 
+  //This is dodgy; not 100% how this is working; just fortunate coincidence atm
   let x, y
-  //if freshly instantiated, we have to offset the original x value from where it's been placed on the inkscape canvas
-  if (!as_instance) {
+  if (!as_instance) { //if freshly instantiated, we have to offset the original x value from where it's been placed on the inkscape canvas
     x = 0
     y = 0
-  } else { //otherwise
+  } else {
     x = bbox.x
     y = bbox.y
   }
@@ -49,6 +51,7 @@ const DisplayObject = (dom_node, bbox, name, as_instance = false) => {
   return Object.assign({ //base
     _node: dom_node,
     _children: children,
+    _name: name, //for debug
     get x() {
       return x
     },
@@ -69,11 +72,22 @@ const DisplayObject = (dom_node, bbox, name, as_instance = false) => {
       buttonMode = _buttonMode
       applyStyling()
     },
-    addEventListener: (eventType, fn, useCapture = false) => {
-      dom_node.addEventListener(eventType, fn, useCapture)
+    addEventListener: (eventType, fn, useCapture = false) => { //useCapture default is false
+      dom_node.addEventListener(eventType, (e) => {
+        e.stopPropagation() //stops the hint from bubbling any further to the hint listener on the stage
+        fn()
+      })
+    },
+    removeChild: (display_object) => {
+      const index = children.indexOf(display_object)
+      if (index > -1) {
+        children.splice(index, 1)
+        dom_node.removeChild(display_object._node)
+      }
     },
     addChild: (display_object) => {
-      if (true) { //check if do isn't already in that parent
+      const index = children.indexOf(display_object)
+      if (index === -1) {
         children.push(display_object)
         dom_node.appendChild(display_object._node)
       }
@@ -116,17 +130,20 @@ const createStageNode = (inkscape_container) => {
 
 const augmentWithHints = (display_object) => {
 
-  //init
+  //init. Default true
   let enableHints = true
 
-  display_object.addEventListener('click', () => {
+  const showClickableAreas = () => {
     //do a tree search
     const to_visit = [display_object]
     while (to_visit.length > 0) {
       const visiting = to_visit.pop()
       for (const child of visiting._children) {
         if (child.buttonMode) {
-          console.log("toggling this guy!");
+          child._node.setAttribute('class', '')
+          //Need to access a DOM-esque value (not function) like this to trigger a reflow: https://css-tricks.com/restart-css-animation/
+          child._node.scrollTop
+          child._node.setAttribute('class', 'fadey')
         }
         to_visit.push(child)
       }
@@ -135,7 +152,10 @@ const augmentWithHints = (display_object) => {
     fadeyElement.classList.remove('fadey')
     void fadeyElement.offsetWidth
     fadeyElement.classList.add('fadey')
-  })
+  }
+
+  display_object.addEventListener('click', showClickableAreas)
+
   return Object.assign({},
     display_object, {
       get enableHints() {
@@ -180,20 +200,25 @@ module.exports = {
     const inkscape_container = library_element.contentDocument.firstElementChild
 
     //adding some keyframe data. We'll need this when we don't want to manually do stuff to the index.html of the demo
-    //const style = document.createElement('style')
-    //style.type = 'text/css'
-    //const keyFrames = `
-      //@keyframes fadey {
-        //0%,100% { opacity: 0; }
-        //50% { opacity: 1; }
-      //}`;
-    //style.innerHTML = keyFrames
-    //document.getElementsByTagName('head')[0].appendChild(style)
+    const style = document.createElement('style')
+    style.type = 'text/css'
+    const hints_css = `
+      .fadey {
+        animation: fadey 0.4s linear forwards;
+      }
+      @keyframes fadey {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }`;
+    style.innerHTML = hints_css
+    document.getElementsByTagName('head')[0].appendChild(style)
+
+    const flux = {} //TODO: get some sick helper methods in here yo
 
     const {
       stage,
       library
     } = fluxInit(stage_element, inkscape_container)
-    return callback(stage, library)
+    return callback(stage, library, flux)
   }
 }

@@ -1,7 +1,7 @@
-const flux = require('../src/flux.js')
+const Flux = require('../src/flux.js')
 
 window.init = () => {
-  flux.init(document.getElementById('stage'), document.getElementById('assets'), (stage, library) => {
+  Flux.init(document.getElementById('stage'), document.getElementById('assets'), (stage, library, flux) => {
     //const square = library.Square()
     //const circle = library.Circle()
     //const triangle = library.Triangle()
@@ -33,10 +33,13 @@ window.init = () => {
     //
     //Okay let's do nakama mockup again.
     const apps = library.apps()
+    const welcome = library.welcome()
     stage.addChild(apps)
     apps.play_button.buttonMode = true
     apps.play_button.addEventListener('click', () => {
       console.log("play got clicked");
+      stage.removeChild(apps)
+      stage.addChild(welcome)
     })
     //console.log("apps.play_button: ", apps.play_button);
     //console.log("apps.play_button.x: ", apps.play_button.x);
