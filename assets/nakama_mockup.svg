@@ -97,11 +97,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.3641268"
-     inkscape:cx="1916.9225"
-     inkscape:cy="835.77376"
+     inkscape:zoom="1.1232393"
+     inkscape:cx="240.49144"
+     inkscape:cy="801.50855"
      inkscape:document-units="mm"
-     inkscape:current-layer="g1111"
+     inkscape:current-layer="g1422"
      showgrid="false"
      inkscape:window-width="1440"
      inkscape:window-height="851"
@@ -1031,6 +1031,8 @@
                id="tspan1244">literally every occasion</tspan></tspan></text>
         <g
            id="g1238">
+          <title
+             id="title1210">play_button</title>
           <use
              transform="translate(297.91729,29.782255)"
              height="100%"

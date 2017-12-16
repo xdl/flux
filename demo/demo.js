@@ -34,5 +34,16 @@ window.init = () => {
     //Okay let's do nakama mockup again.
     const apps = library.apps()
     stage.addChild(apps)
+    apps.play_button.buttonMode = true
+    apps.play_button.addEventListener('click', () => {
+      console.log("play got clicked");
+    })
+    //console.log("apps.play_button: ", apps.play_button);
+    //console.log("apps.play_button.x: ", apps.play_button.x);
+    //apps.play_button.x = 10;
+    //apps.x = 10;
+    //console.log("apps.width: ", apps.width);
+    //console.log("apps.play_button.width: ", apps.play_button.width);
+    //console.log("apps.x: ", apps.x);
   })
 }

@@ -9,24 +9,30 @@ const getInstances = (node) => {
     const name = title.innerHTML
     const elem = title.parentNode
     if (elem.id !== node.id) { //stops the element of interest (the parent) from being instantiated again
-      const instance = DisplayObject(elem, elem.getBBox())
+      const instance = DisplayObject(elem, elem.getBBox(), name, true)
       instances[name] = instance
     }
   }
   return instances
 }
 
-const DisplayObject = (dom_node, bbox) => {
+const DisplayObject = (dom_node, bbox, name, as_instance = false) => {
 
   //initial values
   const children = []
   //Second use of the title element:
   //2. As an exposed instance name in an instantiated class from the Library
   const instances = getInstances(dom_node)
-  console.log("instances: ", instances);
 
-  let x = 0
-  let y = 0
+  let x, y
+  //if freshly instantiated, we have to offset the original x value from where it's been placed on the inkscape canvas
+  if (!as_instance) {
+    x = 0
+    y = 0
+  } else { //otherwise
+    x = bbox.x
+    y = bbox.y
+  }
 
   let buttonMode = false
 
@@ -37,10 +43,10 @@ const DisplayObject = (dom_node, bbox) => {
     dom_node.setAttribute('transform', `translate(${-bbox.x + x}, ${-bbox.y + y})`)
   }
 
-  //init; normalise to zero
+  //init; normalise to zero. For instances, bbox is conveniently 0 anyway, so it stays in place.
   applyTransformAttribute()
 
-  return {
+  return Object.assign({ //base
     _node: dom_node,
     _children: children,
     get x() {
@@ -49,6 +55,12 @@ const DisplayObject = (dom_node, bbox) => {
     set x(_x) {
       x = _x
       applyTransformAttribute()
+    },
+    get width() {
+      return dom_node.getBBox().width
+    },
+    get height() {
+      return dom_node.getBBox().height
     },
     get buttonMode() {
       return buttonMode
@@ -66,7 +78,7 @@ const DisplayObject = (dom_node, bbox) => {
         dom_node.appendChild(display_object._node)
       }
     }
-  }
+  }, instances) //apply instances to it after
 }
 
 
@@ -85,7 +97,7 @@ const Library = (stage_node) => {
     const elem = title.parentNode
     directory[name] = () => {
       const node = instantiateNode(elem)
-      return DisplayObject(node, elem.getBBox())
+      return DisplayObject(node, elem.getBBox(), name)
     }
   }
   return directory
@@ -138,7 +150,8 @@ const augmentWithHints = (display_object) => {
 const fluxInit = (stage_element, inkscape_container) => {
   const stage_node = createStageNode(inkscape_container)
 
-  //copy over layers to the stage element, then hide them
+  //copy over layers to the stage element, then hide them. This is somewhat necessary, because we need the elements in the svg for any use elements to refer back to.
+  //TODO: figure out whether or not hiding them makes sense as default
   for (let i = 0; i < inkscape_container.children.length; i++) {
     const child = inkscape_container.children[i]
     if (child.tagName === 'g') {
@@ -154,7 +167,7 @@ const fluxInit = (stage_element, inkscape_container) => {
 
   //pass the first layer of the stage as a scratch pad for use_string initiation
   const library = Library(stage_node)
-  const stage = augmentWithHints(DisplayObject(stage_node, stage_node.getBBox()))
+  const stage = augmentWithHints(DisplayObject(stage_node, stage_node.getBBox(), 'stage'))
 
   return {
     stage,
