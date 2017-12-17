@@ -1,7 +1,7 @@
 const path = require('path');
 
 const config = {
-  entry: './demo/demo.js',
+  entry: './demo/demo_nakama_full.js',
   devtool: 'cheap-module-inline-source-map',
   output: {
     path: path.resolve(__dirname, 'dist'),
