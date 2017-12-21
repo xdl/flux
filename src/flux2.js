@@ -1,6 +1,7 @@
 const INKSCAPE_TITLE_TAG = 'title'
 const SVGNS = "http://www.w3.org/2000/svg"
 const SVGNSX = "http://www.w3.org/1999/xlink"
+const decomposeTransformAttribute = require('./lib/decompose.js').decomposeTransformAttribute
 
 const getInstances = (node) => {
   const instances = {}
@@ -9,8 +10,6 @@ const getInstances = (node) => {
     const name = title.innerHTML
     const elem = title.parentNode
     if (elem.id !== node.id) { //stops the element of interest (the parent) from being instantiated again
-      console.log("name: ", name);
-      console.log("elem.getBBox(): ", elem.getBBox());
       const instance = DisplayObject(elem, name)
       instances[name] = instance
     }
@@ -74,10 +73,43 @@ const DisplayObject = (dom_node, name) => {
   }, instances) //apply instances to it after
 }
 
+const _instantiateNode = (elem, inkscape_node) => {
+  const instantiate = (n) => {
+    const clone = n.cloneNode(true)
+    postOrder(clone)
+    return clone
+  }
+  const replaceChild = (parent, child) => {
+    const transform_string = child.getAttribute('transform')
+    const ta = decomposeTransformAttribute(transform_string)
+    const replacement_id = child.getAttribute('xlink:href').slice(1)
+    const replacement_node = inkscape_node.getElementById(replacement_id)
+    const replaced_node = instantiate(replacement_node)
+  
+    console.log("ta: ", ta);
+    replaced_node.setAttribute('transform', `
+      scale(${ta.scale[0]}, ${ta.scale[1]})
+      translate(${ta.translate[0]}, ${ta.translate[1]})
+    `);
+    parent.replaceChild(replaced_node, child)
+  }
+  const postOrder = (p) => {
+    for (let i = 0; i < p.children.length; i++) {
+      const child = p.children[i]
+      postOrder(child)
+      if (child.tagName === 'use') {
+        replaceChild(p, child)
+      }
+    }
+  }
 
-const instantiateNode = (elem) => {
-  const clone = elem.cloneNode(true)
-  return clone
+  return instantiate(elem)
+}
+
+
+const instantiateNode = (elem, name, inkscape_node) => {
+  console.log("instantiating ", name);
+  return _instantiateNode(elem, inkscape_node)
 }
 
 const augmentWithMoveable = (display_object, bbox) => {
@@ -102,16 +134,16 @@ const augmentWithMoveable = (display_object, bbox) => {
   })
 }
 
-const Library = (stage_node) => {
+const Library = (inkscape_node) => {
   const directory = {}
   //First use of title elements:
   //1. As a class that's been 'Export for Actionscript'd
-  const title_elements = Array.prototype.slice.call(stage_node.getElementsByTagName(INKSCAPE_TITLE_TAG))
+  const title_elements = Array.prototype.slice.call(inkscape_node.getElementsByTagName(INKSCAPE_TITLE_TAG))
   for (const title of title_elements) {
     const name = title.innerHTML
     const elem = title.parentNode
     directory[name] = () => {
-      const node = instantiateNode(elem)
+      const node = instantiateNode(elem, name, inkscape_node)
       return augmentWithMoveable(DisplayObject(node, name), elem.getBBox())
     }
   }
@@ -179,9 +211,9 @@ const fluxInit = (stage_element, inkscape_container) => {
   for (let i = 0; i < inkscape_container.children.length; i++) {
     const child = inkscape_container.children[i]
     if (child.tagName === 'g') {
-      const layer_clone = child.cloneNode(true)
-      layer_clone.style.display = 'none'
-      stage_node.appendChild(layer_clone)
+      //const layer_clone = child.cloneNode(true)
+      //layer_clone.style.display = 'none'
+      //stage_node.appendChild(layer_clone)
     } else if (child.tagName === 'defs') {
       const clone = child.cloneNode(true)
       stage_node.appendChild(clone)
@@ -190,7 +222,7 @@ const fluxInit = (stage_element, inkscape_container) => {
   stage_element.appendChild(stage_node)
 
   //pass the first layer of the stage as a scratch pad for use_string initiation
-  const library = Library(stage_node)
+  const library = Library(inkscape_container)
   const stage = augmentWithHints(DisplayObject(stage_node, 'stage'))
 
   return {

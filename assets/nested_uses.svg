@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   sodipodi:docname="nested_uses.svg">
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient902"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#85a47e;stop-opacity:1;"
+         offset="0"
+         id="stop900" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient902"
+       id="linearGradient904"
+       x1="41.274654"
+       y1="105.33057"
+       x2="142.88697"
+       y2="105.33057"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.59910008"
+     inkscape:cx="316.7668"
+     inkscape:cy="503.98529"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1440"
+     inkscape:window-height="851"
+     inkscape:window-x="0"
+     inkscape:window-y="1"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g824"
+       transform="translate(106.43394,-83.468942)"
+       inkscape:label="my_cool_btn">
+      <rect
+         ry="1.3229166"
+         rx="1.3229166"
+         y="86.089287"
+         x="30.238094"
+         height="49.136902"
+         width="71.815475"
+         id="rect815"
+         style="opacity:1;fill:#40362c;fill-opacity:1;fill-rule:nonzero;stroke:#616161;stroke-width:0.47799999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text819"
+         y="115.48817"
+         x="37.53894"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:0;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+           y="115.48817"
+           x="37.53894"
+           id="tspan817"
+           sodipodi:role="line">Cool Button</tspan></text>
+    </g>
+    <g
+       id="g856"
+       inkscape:label="widget"
+       transform="translate(-32.239327,-64.478654)">
+      <rect
+         ry="1.3229166"
+         rx="1.3229165"
+         y="73.009613"
+         x="41.432022"
+         height="64.641922"
+         width="101.29758"
+         id="rect828"
+         style="opacity:1;fill:url(#linearGradient904);fill-opacity:1;fill-rule:nonzero;stroke:#616161;stroke-width:0.31473655;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g824"
+         id="use858"
+         width="100%"
+         height="100%"
+         transform="matrix(0.68234576,0,0,0.67954153,-43.222189,95.273279)">
+        <title
+           id="title861">my_cool_btn</title>
+      </use>
+      <text
+         id="text832"
+         y="91.198265"
+         x="51.229622"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:0;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#2129a0;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#2129a0;fill-opacity:1;stroke-width:0.26458332"
+           y="91.198265"
+           x="51.229622"
+           id="tspan830"
+           sodipodi:role="line">Widget</tspan></text>
+    </g>
+    <g
+       id="g891"
+       inkscape:label="screen_1">
+      <title
+         id="title898">screen_1</title>
+      <rect
+         ry="1.3229166"
+         rx="1.3229166"
+         y="87.665192"
+         x="15.015576"
+         height="90.535095"
+         width="188.13635"
+         id="rect882"
+         style="opacity:1;fill:#2129a0;fill-opacity:1;fill-rule:nonzero;stroke:#616161;stroke-width:0.47799999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text886"
+         y="102.68078"
+         x="22.965002"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:0;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#c5dbb4;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#c5dbb4;fill-opacity:1;stroke-width:0.26458332"
+           y="102.68078"
+           x="22.965002"
+           id="tspan884"
+           sodipodi:role="line">Screen 1</tspan></text>
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g856"
+         id="use893"
+         width="100%"
+         height="100%"
+         transform="translate(75.961154,94.509808)">
+        <title
+           id="title896">widget</title>
+      </use>
+    </g>
+    <use
+       x="0"
+       y="0"
+       xlink:href="#g856"
+       id="use906"
+       width="100%"
+       height="100%"
+       transform="translate(31.356058,193.43596)" />
+  </g>
+</svg>
