@@ -17,7 +17,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.2 5c3e80d, 2017-08-06"
-   sodipodi:docname="nakama_mockup.svg"
+   sodipodi:docname="nakama_mockup_171217.svg"
    enable-background="new">
   <defs
      id="defs2">
@@ -151,8 +151,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.1232393"
-     inkscape:cx="1703.7064"
-     inkscape:cy="690.87916"
+     inkscape:cx="889.09815"
+     inkscape:cy="633.9011"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -678,7 +678,7 @@
        inkscape:label="page_home_occupants"
        transform="translate(-463.21402,-5.7874589)">
       <title
-         id="title1716">paeg_home_occupants</title>
+         id="title1716">page_home_occupants</title>
       <use
          transform="translate(657.06998,-393.61149)"
          height="100%"

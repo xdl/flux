@@ -9,56 +9,35 @@ const getInstances = (node) => {
     const name = title.innerHTML
     const elem = title.parentNode
     if (elem.id !== node.id) { //stops the element of interest (the parent) from being instantiated again
-      const instance = DisplayObject(elem, elem.getBBox(), name, true)
+      console.log("name: ", name);
+      console.log("elem.getBBox(): ", elem.getBBox());
+      const instance = DisplayObject(elem, name)
       instances[name] = instance
     }
   }
   return instances
 }
 
-const DisplayObject = (dom_node, bbox, name, as_instance = false) => {
+const DisplayObject = (dom_node, name) => {
 
   //initial values
   //Second use of the title element:
   //2. As an exposed instance name in an instantiated class from the Library
-  const instances = getInstances(dom_node)
+  const instances = getInstances(dom_node, name)
   const children = Object.keys(instances).map((instance_name) => {
     return instances[instance_name]
   })
-
-  //This is dodgy; not 100% how this is working; just fortunate coincidence atm
-  let x, y
-  if (!as_instance) { //if freshly instantiated, we have to offset the original x value from where it's been placed on the inkscape canvas
-    x = 0
-    y = 0
-  } else {
-    x = bbox.x
-    y = bbox.y
-  }
 
   let buttonMode = false
 
   const applyStyling = () => {
     dom_node.style.cursor = buttonMode ? 'pointer' : 'default'
   }
-  const applyTransformAttribute = () => {
-    dom_node.setAttribute('transform', `translate(${-bbox.x + x}, ${-bbox.y + y})`)
-  }
-
-  //init; normalise to zero. For instances, bbox is conveniently 0 anyway, so it stays in place.
-  applyTransformAttribute()
 
   return Object.assign({ //base
     _node: dom_node,
     _children: children,
     _name: name, //for debug
-    get x() {
-      return x
-    },
-    set x(_x) {
-      x = _x
-      applyTransformAttribute()
-    },
     get width() {
       return dom_node.getBBox().width
     },
@@ -101,6 +80,28 @@ const instantiateNode = (elem) => {
   return clone
 }
 
+const augmentWithMoveable = (display_object, bbox) => {
+  let x = 0
+  let y = 0
+
+  const applyTransformAttribute = () => {
+    display_object._node.setAttribute('transform', `translate(${-bbox.x + x}, ${-bbox.y + y})`)
+  }
+
+  //init
+  applyTransformAttribute()
+
+  return Object.assign(display_object, {
+    get x() {
+      return x
+    },
+    set x(_x) {
+      x = _x
+      applyTransformAttribute()
+    }
+  })
+}
+
 const Library = (stage_node) => {
   const directory = {}
   //First use of title elements:
@@ -111,7 +112,7 @@ const Library = (stage_node) => {
     const elem = title.parentNode
     directory[name] = () => {
       const node = instantiateNode(elem)
-      return DisplayObject(node, elem.getBBox(), name)
+      return augmentWithMoveable(DisplayObject(node, name), elem.getBBox())
     }
   }
   return directory
@@ -159,8 +160,7 @@ const augmentWithHints = (display_object) => {
 
   display_object.addEventListener('click', showClickableAreas)
 
-  return Object.assign({},
-    display_object, {
+  return Object.assign(display_object, {
       get enableHints() {
         return enableHints
       },
@@ -174,6 +174,7 @@ const fluxInit = (stage_element, inkscape_container) => {
   const stage_node = createStageNode(inkscape_container)
 
   //copy over layers to the stage element, then hide them. This is somewhat necessary, because we need the elements in the svg for any use elements to refer back to.
+  //TODO: If we're going to allow reaching into the titles of an instance, maybe we can just leave this until the display object is made, i.e. leave them uncopied
   //TODO: figure out whether or not hiding them makes sense as default
   for (let i = 0; i < inkscape_container.children.length; i++) {
     const child = inkscape_container.children[i]
@@ -190,7 +191,7 @@ const fluxInit = (stage_element, inkscape_container) => {
 
   //pass the first layer of the stage as a scratch pad for use_string initiation
   const library = Library(stage_node)
-  const stage = augmentWithHints(DisplayObject(stage_node, stage_node.getBBox(), 'stage'))
+  const stage = augmentWithHints(DisplayObject(stage_node, 'stage'))
 
   return {
     stage,

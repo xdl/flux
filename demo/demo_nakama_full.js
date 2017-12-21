@@ -44,7 +44,13 @@ const setupHtml = () => {
 const initFlux = () => {
   Flux.init(document.getElementById('stage'), document.getElementById('assets'), (stage, library, flux) => {
     const welcome = library.page_home_welcome()
+    const occupants = library.page_home_occupants()
     stage.addChild(welcome)
+    welcome.join_room_btn.buttonMode = true
+    welcome.join_room_btn.addEventListener('click', () => {
+      stage.removeChild(welcome)
+      stage.addChild(occupants)
+    })
   })
 }
 
