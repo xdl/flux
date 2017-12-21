@@ -45,6 +45,11 @@ const initFlux = () => {
   Flux.init(document.getElementById('stage'), document.getElementById('assets'), (stage, library, flux) => {
     const gwc = library.GroupWithClone()
     stage.addChild(gwc)
+    //const level_1 = library.level_1_clone()
+    //stage.addChild(level_1)
+    //level_1.x = 200
+    //level_1.y = 200
+
   })
 }
 

@@ -1,7 +1,10 @@
 const INKSCAPE_TITLE_TAG = 'title'
 const SVGNS = "http://www.w3.org/2000/svg"
 const SVGNSX = "http://www.w3.org/1999/xlink"
-const decomposeTransformAttribute = require('./lib/decompose.js').decomposeTransformAttribute
+const {
+  decomposeTransformAttribute,
+  calculateNodeTranslation
+} = require('./lib/decompose.js')
 
 const getInstances = (node) => {
   const instances = {}
@@ -85,11 +88,17 @@ const _instantiateNode = (elem, inkscape_node) => {
     const replacement_id = child.getAttribute('xlink:href').slice(1)
     const replacement_node = inkscape_node.getElementById(replacement_id)
     const replaced_node = instantiate(replacement_node)
+    const tra = calculateNodeTranslation(replaced_node);
   
-    console.log("ta: ", ta);
+    //This is still awry; I'm thinking we need to add the original x, ys or translates for an offset
+      //translate(${ta.translate[0]}, ${ta.translate[1]})
+    //So... scaling doesn't seem to work so well with this one.
+    
+    //Do the following: translate according to original <use> position
     replaced_node.setAttribute('transform', `
-      scale(${ta.scale[0]}, ${ta.scale[1]})
-      translate(${ta.translate[0]}, ${ta.translate[1]})
+      translate(${ta.translate[0]},${ta.translate[1]})
+      scale(${ta.scale[0]},${ta.scale[1]})
+      translate(${tra[0]},${tra[1]})
     `);
     parent.replaceChild(replaced_node, child)
   }

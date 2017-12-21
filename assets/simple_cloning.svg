@@ -27,8 +27,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.171857"
-     inkscape:cx="571.42856"
-     inkscape:cy="910"
+     inkscape:cx="413.55947"
+     inkscape:cy="841.73228"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -45,7 +45,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -53,25 +53,19 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <rect
-       style="opacity:1;fill:#d4ced1;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.28;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect2456"
-       width="63.5"
-       height="50.648811"
-       x="16.630953"
-       y="31.660713" />
     <g
-       id="g2467">
+       id="g2467"
+       transform="translate(0,-2.9719336e-6)">
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g5910"
+         id="use5912"
+         width="100%"
+         height="100%"
+         transform="translate(103.40781,-4.5156248)" />
       <title
          id="title2469">GroupWithClone</title>
-      <use
-         transform="translate(102.80952,-0.75595238)"
-         height="100%"
-         width="100%"
-         id="use2458"
-         xlink:href="#rect2456"
-         y="0"
-         x="0" />
       <text
          id="text2462"
          y="42.005173"
@@ -83,6 +77,39 @@
            x="129.58229"
            id="tspan2460"
            sodipodi:role="line">My sibling is a clone!</tspan></text>
+    </g>
+    <g
+       id="g5855"
+       transform="translate(-114.01953,-9.9343748)">
+      <rect
+         ry="1.3229166"
+         rx="1.3229166"
+         y="12.51563"
+         x="119.66406"
+         height="9.9343748"
+         width="16.707811"
+         id="rect5852"
+         style="opacity:1;fill:#c5dbb4;fill-opacity:1;fill-rule:nonzero;stroke:#616161;stroke-width:0.47799999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <g
+       id="g5910">
+      <title
+         id="title5916">level_1_clone</title>
+      <rect
+         y="31.660713"
+         x="16.630953"
+         height="50.648811"
+         width="63.5"
+         id="rect2456"
+         style="opacity:1;fill:#d4ced1;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.28;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <use
+         transform="matrix(1.2934737,0,0,0.99356946,30.210579,58.074321)"
+         height="100%"
+         width="100%"
+         id="use5906"
+         xlink:href="#g5855"
+         y="0"
+         x="0" />
     </g>
   </g>
 </svg>

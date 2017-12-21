@@ -40,6 +40,7 @@ const parseMatrix = (m) => {
   return m.slice('matrix('.length, -1).split(',').map(parseFloat)
 }
 
+//'translate(23, 31)' → [23, 31]
 const parseTranslate = (m) => {
   return m.slice('translate('.length, -1).split(',').map(parseFloat)
 }
@@ -66,4 +67,18 @@ const decomposeTransformAttribute = (transform) => {
   }
 }
 
+//presense of transform offsets it
+const calculateNodeTranslation = (node) => {
+  //const x = node.getAttribute('x')
+  //const y = node.getAttribute('y')
+  const transform = node.getAttribute('transform')
+  if (transform && transform.startsWith('translate')) {
+    return parseTranslate(transform)
+  } else {
+    return [parseFloat(node.getAttribute('x')) || 0,
+      parseFloat(node.getAttribute('y')) || 0]
+  }
+}
+
 exports.decomposeTransformAttribute = decomposeTransformAttribute
+exports.calculateNodeTranslation = calculateNodeTranslation
