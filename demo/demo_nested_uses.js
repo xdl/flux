@@ -50,8 +50,11 @@ const initFlux = () => {
     screen.widget.addEventListener('click', () => {
       console.log("widget clicked");
     })
-    //screen.x = 10
-    //screen.widget.my_cool_btn.buttonMode = true
+    screen.x = 10
+    screen.widget.my_cool_btn.buttonMode = true
+    screen.widget.my_cool_btn.addEventListener('click', () => {
+      console.log("cool button clicked");
+    })
   })
 }
 
