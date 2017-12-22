@@ -41,7 +41,7 @@ const parseMatrix = (m) => {
 }
 
 //'translate(23, 31)' → [23, 31]
-const parseTranslate = (m) => {
+const parseTranslateAttribute = (m) => {
   return m.slice('translate('.length, -1).split(',').map(parseFloat)
 }
 
@@ -51,7 +51,7 @@ const decomposeTransformAttribute = (transform) => {
     return decomposeMatrix(parseMatrix(transform))
   } else if (transform.startsWith('translate')) {
     return {
-      translate: parseTranslate(transform),
+      translate: parseTranslateAttribute(transform),
       rotate: 0,
       scale: [1, 1],
       skew: 0
@@ -69,16 +69,23 @@ const decomposeTransformAttribute = (transform) => {
 
 //presense of transform offsets it
 const calculateNodeTranslation = (node) => {
-  //const x = node.getAttribute('x')
-  //const y = node.getAttribute('y')
   const transform = node.getAttribute('transform')
   if (transform && transform.startsWith('translate')) {
-    return parseTranslate(transform)
+    return parseTranslateAttribute(transform)
   } else {
     return [parseFloat(node.getAttribute('x')) || 0,
       parseFloat(node.getAttribute('y')) || 0]
   }
 }
 
+//`translate(75.961154,94.509808)
+//scale(1,1)
+//translate(-32.239327,-64.478654)` → [t...,s..., t...]
+const transformAttributeToStringList = (transform_string) => {
+  return transform_string.trim().split("\n").map(t => t.trim())
+}
+
+exports.parseTranslateAttribute = parseTranslateAttribute
+exports.transformAttributeToStringList = transformAttributeToStringList
 exports.decomposeTransformAttribute = decomposeTransformAttribute
 exports.calculateNodeTranslation = calculateNodeTranslation

@@ -1,4 +1,4 @@
-const Flux = require('../src/flux2.js')
+const Flux = require('../src/flux.js')
 const ASSET_PATH = 'assets/nakama_mockup_171217.svg'
 
 const setupHtml = () => {

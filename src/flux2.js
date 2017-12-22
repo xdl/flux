@@ -6,7 +6,7 @@ const {
   calculateNodeTranslation
 } = require('./lib/decompose.js')
 
-const getInstances = (node) => {
+const getInstances = (node, node_name) => {
   const instances = {}
   const title_elements = Array.prototype.slice.call(node.getElementsByTagName(INKSCAPE_TITLE_TAG))
   for (const title of title_elements) {
@@ -20,15 +20,22 @@ const getInstances = (node) => {
   return instances
 }
 
+const augmentWithInstances = (display_object, name) => {
+  const instances = getInstances(display_object._node, name)
+  for (let name of Object.keys(instances)) {
+    const instance = instances[name]
+    display_object._children.push(instance)
+  }
+  return Object.assign(display_object,
+    instances)
+}
+
 const DisplayObject = (dom_node, name) => {
 
   //initial values
   //Second use of the title element:
   //2. As an exposed instance name in an instantiated class from the Library
-  const instances = getInstances(dom_node, name)
-  const children = Object.keys(instances).map((instance_name) => {
-    return instances[instance_name]
-  })
+  const children = []
 
   let buttonMode = false
 
@@ -73,7 +80,7 @@ const DisplayObject = (dom_node, name) => {
         dom_node.appendChild(display_object._node)
       }
     }
-  }, instances) //apply instances to it after
+  })
 }
 
 const _instantiateNode = (elem, inkscape_node) => {
@@ -82,25 +89,30 @@ const _instantiateNode = (elem, inkscape_node) => {
     postOrder(clone)
     return clone
   }
-  const replaceChild = (parent, child) => {
-    const transform_string = child.getAttribute('transform')
-    const ta = decomposeTransformAttribute(transform_string)
-    const replacement_id = child.getAttribute('xlink:href').slice(1)
+  const replaceChild = (parent, use_node) => {
+    const transform_string = use_node.getAttribute('transform')
+    const use_transform = decomposeTransformAttribute(transform_string)
+    const replacement_id = use_node.getAttribute('xlink:href').slice(1)
     const replacement_node = inkscape_node.getElementById(replacement_id)
     const replaced_node = instantiate(replacement_node)
-    const tra = calculateNodeTranslation(replaced_node);
-  
-    //This is still awry; I'm thinking we need to add the original x, ys or translates for an offset
-      //translate(${ta.translate[0]}, ${ta.translate[1]})
-    //So... scaling doesn't seem to work so well with this one.
-    
-    //Do the following: translate according to original <use> position
+    const followed_transform = calculateNodeTranslation(replaced_node);
+
+    //preserve any title tags
+    let title_node
+    if (use_node.children[0] && use_node.children[0].tagName === 'title') {
+      title_node = use_node.children[0]
+    }
+
+    //TODO: understand why this works, and how coordinate systems behave with use elements properly
     replaced_node.setAttribute('transform', `
-      translate(${ta.translate[0]},${ta.translate[1]})
-      scale(${ta.scale[0]},${ta.scale[1]})
-      translate(${tra[0]},${tra[1]})
-    `);
-    parent.replaceChild(replaced_node, child)
+      translate(${use_transform.translate[0]},${use_transform.translate[1]})
+      scale(${use_transform.scale[0]},${use_transform.scale[1]})
+      translate(${followed_transform[0]},${followed_transform[1]})
+    `)
+    if (title_node) {
+      replaced_node.appendChild(title_node)
+    }
+    parent.replaceChild(replaced_node, use_node)
   }
   const postOrder = (p) => {
     for (let i = 0; i < p.children.length; i++) {
@@ -117,7 +129,6 @@ const _instantiateNode = (elem, inkscape_node) => {
 
 
 const instantiateNode = (elem, name, inkscape_node) => {
-  console.log("instantiating ", name);
   return _instantiateNode(elem, inkscape_node)
 }
 
@@ -153,7 +164,9 @@ const Library = (inkscape_node) => {
     const elem = title.parentNode
     directory[name] = () => {
       const node = instantiateNode(elem, name, inkscape_node)
-      return augmentWithMoveable(DisplayObject(node, name), elem.getBBox())
+      return augmentWithInstances(
+        augmentWithMoveable(
+          DisplayObject(node, name), elem.getBBox()), name)
     }
   }
   return directory

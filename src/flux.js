@@ -1,40 +1,47 @@
 const INKSCAPE_TITLE_TAG = 'title'
 const SVGNS = "http://www.w3.org/2000/svg"
 const SVGNSX = "http://www.w3.org/1999/xlink"
+const {
+  decomposeTransformAttribute,
+  calculateNodeTranslation,
+  transformAttributeToStringList,
+  parseTranslateAttribute
+} = require('./lib/decompose.js')
 
-const getInstances = (node) => {
+const wrapInstances = (node, node_name) => {
   const instances = {}
   const title_elements = Array.prototype.slice.call(node.getElementsByTagName(INKSCAPE_TITLE_TAG))
   for (const title of title_elements) {
     const name = title.innerHTML
     const elem = title.parentNode
     if (elem.id !== node.id) { //stops the element of interest (the parent) from being instantiated again
-      const instance = DisplayObject(elem, elem.getBBox(), name, true)
+      const transform = elem.getAttribute('transform')
+      const t_list = transformAttributeToStringList(transform)
+      //assume the last one has a translation transformation:
+      const translate = parseTranslateAttribute(t_list[0])
+      const instance = DisplayObject(elem, t_list.slice(1), name, translate[0], translate[1])
       instances[name] = instance
     }
   }
   return instances
 }
 
-const DisplayObject = (dom_node, bbox, name, as_instance = false) => {
+const augmentWithInstances = (display_object, name) => {
+  const instances = wrapInstances(display_object._node, name)
+  for (let name of Object.keys(instances)) {
+    const instance = instances[name]
+    display_object._children.push(instance)
+  }
+  return Object.assign(display_object,
+    instances)
+}
+
+const DisplayObject = (dom_node, transform_offsets, name, x = 0, y = 0) => {
 
   //initial values
   //Second use of the title element:
   //2. As an exposed instance name in an instantiated class from the Library
-  const instances = getInstances(dom_node)
-  const children = Object.keys(instances).map((instance_name) => {
-    return instances[instance_name]
-  })
-
-  //This is dodgy; not 100% how this is working; just fortunate coincidence atm
-  let x, y
-  if (!as_instance) { //if freshly instantiated, we have to offset the original x value from where it's been placed on the inkscape canvas
-    x = 0
-    y = 0
-  } else {
-    x = bbox.x
-    y = bbox.y
-  }
+  const children = []
 
   let buttonMode = false
 
@@ -42,12 +49,15 @@ const DisplayObject = (dom_node, bbox, name, as_instance = false) => {
     dom_node.style.cursor = buttonMode ? 'pointer' : 'default'
   }
   const applyTransformAttribute = () => {
-    dom_node.setAttribute('transform', `translate(${-bbox.x + x}, ${-bbox.y + y})`)
+    const transform = `translate(${x}, ${y})`
+    dom_node.setAttribute('transform', `
+      ${transform}
+      ${transform_offsets.join('')}
+    `)
   }
 
-  //init; normalise to zero. For instances, bbox is conveniently 0 anyway, so it stays in place.
+  //init:
   applyTransformAttribute()
-
   return Object.assign({ //base
     _node: dom_node,
     _children: children,
@@ -57,6 +67,13 @@ const DisplayObject = (dom_node, bbox, name, as_instance = false) => {
     },
     set x(_x) {
       x = _x
+      applyTransformAttribute()
+    },
+    get y() {
+      return y
+    },
+    set y(_y) {
+      y = _y
       applyTransformAttribute()
     },
     get width() {
@@ -92,26 +109,74 @@ const DisplayObject = (dom_node, bbox, name, as_instance = false) => {
         dom_node.appendChild(display_object._node)
       }
     }
-  }, instances) //apply instances to it after
+  })
+}
+
+const _instantiateNode = (elem, inkscape_node) => {
+  const instantiate = (n) => {
+    const clone = n.cloneNode(true)
+    postOrder(clone)
+    return clone
+  }
+  const replaceChild = (parent, use_node) => {
+    const transform_string = use_node.getAttribute('transform')
+    const use_transform = decomposeTransformAttribute(transform_string)
+    const replacement_id = use_node.getAttribute('xlink:href').slice(1)
+    const replacement_node = inkscape_node.getElementById(replacement_id)
+    const replaced_node = instantiate(replacement_node)
+    const followed_transform = calculateNodeTranslation(replaced_node);
+
+    //preserve any title tags
+    let title_node
+    if (use_node.children[0] && use_node.children[0].tagName === 'title') {
+      title_node = use_node.children[0]
+    }
+
+    //TODO: understand why this works, and how coordinate systems behave with use elements properly
+    replaced_node.setAttribute('transform', `
+      translate(${use_transform.translate[0]},${use_transform.translate[1]})
+      scale(${use_transform.scale[0]},${use_transform.scale[1]})
+      translate(${followed_transform[0]},${followed_transform[1]})
+    `)
+    if (title_node) {
+      replaced_node.appendChild(title_node)
+    }
+    parent.replaceChild(replaced_node, use_node)
+  }
+  const postOrder = (p) => {
+    for (let i = 0; i < p.children.length; i++) {
+      const child = p.children[i]
+      postOrder(child)
+      if (child.tagName === 'use') {
+        replaceChild(p, child)
+      }
+    }
+  }
+
+  return instantiate(elem)
 }
 
 
-const instantiateNode = (elem) => {
-  const clone = elem.cloneNode(true)
-  return clone
+const instantiateNode = (elem, name, inkscape_node) => {
+  return _instantiateNode(elem, inkscape_node)
 }
 
-const Library = (stage_node) => {
+const Library = (inkscape_node) => {
   const directory = {}
   //First use of title elements:
   //1. As a class that's been 'Export for Actionscript'd
-  const title_elements = Array.prototype.slice.call(stage_node.getElementsByTagName(INKSCAPE_TITLE_TAG))
+  const title_elements = Array.prototype.slice.call(inkscape_node.getElementsByTagName(INKSCAPE_TITLE_TAG))
   for (const title of title_elements) {
     const name = title.innerHTML
     const elem = title.parentNode
     directory[name] = () => {
-      const node = instantiateNode(elem)
-      return DisplayObject(node, elem.getBBox(), name)
+      const node = instantiateNode(elem, name, inkscape_node)
+      const bbox = elem.getBBox()
+      //const transform_offsets = [`translate(${0},${0})`]
+      const transform_offsets = [`translate(${-bbox.x},${-bbox.y})`]
+      //return DisplayObject(node, transform_offsets, name)
+      return augmentWithInstances(
+        DisplayObject(node, transform_offsets, name), name)
     }
   }
   return directory
@@ -126,6 +191,9 @@ const createStageNode = (inkscape_container) => {
   stage_node.setAttributeNS(null, 'width', stageWidth)
   stage_node.setAttributeNS(null, 'height', stageHeight)
   return stage_node
+}
+
+const augmentWithDisplayObject = () => {
 }
 
 const augmentWithHints = (display_object) => {
@@ -156,8 +224,7 @@ const augmentWithHints = (display_object) => {
 
   display_object.addEventListener('click', showClickableAreas)
 
-  return Object.assign({},
-    display_object, {
+  return Object.assign(display_object, {
       get enableHints() {
         return enableHints
       },
@@ -171,13 +238,14 @@ const fluxInit = (stage_element, inkscape_container) => {
   const stage_node = createStageNode(inkscape_container)
 
   //copy over layers to the stage element, then hide them. This is somewhat necessary, because we need the elements in the svg for any use elements to refer back to.
+  //TODO: If we're going to allow reaching into the titles of an instance, maybe we can just leave this until the display object is made, i.e. leave them uncopied
   //TODO: figure out whether or not hiding them makes sense as default
   for (let i = 0; i < inkscape_container.children.length; i++) {
     const child = inkscape_container.children[i]
     if (child.tagName === 'g') {
-      const layer_clone = child.cloneNode(true)
-      layer_clone.style.display = 'none'
-      stage_node.appendChild(layer_clone)
+      //const layer_clone = child.cloneNode(true)
+      //layer_clone.style.display = 'none'
+      //stage_node.appendChild(layer_clone)
     } else if (child.tagName === 'defs') {
       const clone = child.cloneNode(true)
       stage_node.appendChild(clone)
@@ -186,8 +254,8 @@ const fluxInit = (stage_element, inkscape_container) => {
   stage_element.appendChild(stage_node)
 
   //pass the first layer of the stage as a scratch pad for use_string initiation
-  const library = Library(stage_node)
-  const stage = augmentWithHints(DisplayObject(stage_node, stage_node.getBBox(), 'stage'))
+  const library = Library(inkscape_container)
+  const stage = augmentWithHints(DisplayObject(stage_node, [], 'stage'))
 
   return {
     stage,

@@ -1,4 +1,4 @@
-const Flux = require('../src/flux2.js')
+const Flux = require('../src/flux.js')
 const ASSET_PATH = 'assets/nested_uses.svg'
 
 const setupHtml = () => {
@@ -45,11 +45,13 @@ const initFlux = () => {
   Flux.init(document.getElementById('stage'), document.getElementById('assets'), (stage, library, flux) => {
     const screen = library.screen_1()
     stage.addChild(screen)
+    console.log("screen: ", screen);
     screen.widget.buttonMode = true
     screen.widget.addEventListener('click', () => {
       console.log("widget clicked");
     })
-    screen.widget.my_cool_btn.buttonMode = true
+    //screen.x = 10
+    //screen.widget.my_cool_btn.buttonMode = true
   })
 }
 
