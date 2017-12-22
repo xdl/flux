@@ -254,18 +254,19 @@ const augmentWithHints = (display_object) => {
       for (const child of visiting._children) {
         if (child.buttonMode) {
           button_mode_bboxes.push(child._node.getBBox())
-          child._node.setAttribute('class', '')
-          //Need to access a DOM-esque value (not function) like this to trigger a reflow: https://css-tricks.com/restart-css-animation/
-          child._node.scrollTop
-          child._node.setAttribute('class', CLASS_HINTBOX)
         }
         to_visit.push(child)
       }
     }
-    const fadeyElement = document.getElementById('fadeyElement')
-    fadeyElement.classList.remove(CLASS_HINTBOX)
-    void fadeyElement.offsetWidth
-    fadeyElement.classList.add(CLASS_HINTBOX)
+    //remove old hint nodes
+    for (const hint_node of hint_nodes) {
+      display_object._node.removeChild(hint_node)
+    }
+    //add new ones
+    hint_nodes = button_mode_bboxes.map(generateHintBox)
+    for (const hint_node of hint_nodes) {
+      display_object._node.appendChild(hint_node)
+    }
   }
 
   display_object.addEventListener('click', showClickableAreas)
@@ -313,8 +314,8 @@ module.exports = {
         animation: fadeInOut 0.4s linear forwards;
       }
       @keyframes fadeInOut {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0; }
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
       }`;
     style.innerHTML = hints_css
     document.getElementsByTagName('head')[0].appendChild(style)
