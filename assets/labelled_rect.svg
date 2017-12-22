@@ -26,8 +26,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.35"
-     inkscape:cx="-128.57143"
-     inkscape:cy="560"
+     inkscape:cx="-291.42857"
+     inkscape:cy="102.85714"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -64,5 +64,12 @@
       <title
          id="title859">LabelledRect</title>
     </rect>
+    <rect
+       style="opacity:1;fill:#851422;fill-opacity:0.66666669;fill-rule:nonzero;stroke:#431422;stroke-width:0.47799999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.66666669"
+       id="rect880"
+       width="91.470238"
+       height="58.208332"
+       x="66.523811"
+       y="204.7738" />
   </g>
 </svg>

@@ -1,4 +1,5 @@
 const INKSCAPE_TITLE_TAG = 'title'
+const CLASS_HINTBOX = 'fadey'
 const REPLICANT_MARKER = 'replicant'
 const SVGNS = "http://www.w3.org/2000/svg"
 const SVGNSX = "http://www.w3.org/1999/xlink"
@@ -18,7 +19,6 @@ const wrapInstances = (node, node_name) => {
     const t_list = transformAttributeToStringList(transform)
     //assume the last one has a translation transformation:
     const translate = parseTranslateAttribute(t_list[0])
-    //const display_object = DisplayObject(elem, t_list.slice(1), name, translate[0], translate[1])
     const display_object = augmentWithInstances(DisplayObject(elem, t_list.slice(1), name, translate[0], translate[1]), node_name)
     return display_object
   }
@@ -52,8 +52,8 @@ const wrapInstances = (node, node_name) => {
 
 const augmentWithInstances = (display_object, name) => {
   const instances = wrapInstances(display_object._node, name)
-  for (let name of Object.keys(instances)) {
-    const instance = instances[name]
+  for (let i_name of Object.keys(instances)) {
+    const instance = instances[i_name]
     display_object._children.push(instance)
   }
   return Object.assign(display_object,
@@ -214,30 +214,58 @@ const createStageNode = (inkscape_container) => {
   return stage_node
 }
 
+const generateHintBox = (bbox) => {
+  const node = document.createElementNS(SVGNS, 'rect')
+  node.style.opacity = 1;
+  node.style.fill = '#851422';
+  node.style.stroke = '#431422';
+  node.style['stroke-width'] = 0.5;
+  node.style['fill-opacity'] = 0.7;
+  node.style['stroke-opacity'] = 0.7;
+  node.setAttribute('width', bbox.width)
+  node.setAttribute('height', bbox.height)
+  node.setAttribute('x', bbox.x)
+  node.setAttribute('y', bbox.y)
+  node.setAttribute('class', CLASS_HINTBOX)
+  return node
+}
+
 const augmentWithHints = (display_object) => {
 
   //init. Default true
   let enableHints = true
+  let hint_nodes = []
 
   const showClickableAreas = () => {
+
+    //display_object._node.appendChild(generateHintBox({
+      //x: 41,
+      //y: 73,
+      //width: 50,
+      //height: 100
+    //}))
+    
+    const button_mode_bboxes = []
+
     //do a tree search
     const to_visit = [display_object]
     while (to_visit.length > 0) {
       const visiting = to_visit.pop()
       for (const child of visiting._children) {
         if (child.buttonMode) {
+          button_mode_bboxes.push(child._node.getBBox())
           child._node.setAttribute('class', '')
           //Need to access a DOM-esque value (not function) like this to trigger a reflow: https://css-tricks.com/restart-css-animation/
           child._node.scrollTop
-          child._node.setAttribute('class', 'fadey')
+          child._node.setAttribute('class', CLASS_HINTBOX)
         }
         to_visit.push(child)
       }
     }
     const fadeyElement = document.getElementById('fadeyElement')
-    fadeyElement.classList.remove('fadey')
+    fadeyElement.classList.remove(CLASS_HINTBOX)
     void fadeyElement.offsetWidth
-    fadeyElement.classList.add('fadey')
+    fadeyElement.classList.add(CLASS_HINTBOX)
   }
 
   display_object.addEventListener('click', showClickableAreas)
@@ -255,23 +283,15 @@ const augmentWithHints = (display_object) => {
 const fluxInit = (stage_element, inkscape_container) => {
   const stage_node = createStageNode(inkscape_container)
 
-  //copy over layers to the stage element, then hide them. This is somewhat necessary, because we need the elements in the svg for any use elements to refer back to.
-  //TODO: If we're going to allow reaching into the titles of an instance, maybe we can just leave this until the display object is made, i.e. leave them uncopied
-  //TODO: figure out whether or not hiding them makes sense as default
   for (let i = 0; i < inkscape_container.children.length; i++) {
     const child = inkscape_container.children[i]
-    if (child.tagName === 'g') {
-      //const layer_clone = child.cloneNode(true)
-      //layer_clone.style.display = 'none'
-      //stage_node.appendChild(layer_clone)
-    } else if (child.tagName === 'defs') {
+    if (child.tagName === 'defs') { //copy over defs layer for swatches etc.
       const clone = child.cloneNode(true)
       stage_node.appendChild(clone)
     }
   }
   stage_element.appendChild(stage_node)
 
-  //pass the first layer of the stage as a scratch pad for use_string initiation
   const library = Library(inkscape_container)
   const stage = augmentWithHints(DisplayObject(stage_node, [], 'stage'))
 
@@ -289,10 +309,10 @@ module.exports = {
     const style = document.createElement('style')
     style.type = 'text/css'
     const hints_css = `
-      .fadey {
-        animation: fadey 0.4s linear forwards;
+      .${CLASS_HINTBOX} {
+        animation: fadeInOut 0.4s linear forwards;
       }
-      @keyframes fadey {
+      @keyframes fadeInOut {
         0%, 100% { opacity: 1; }
         50% { opacity: 0; }
       }`;

@@ -4,7 +4,7 @@
 
 ** DONE Get cloning to work
    CLOSED: [2017-12-16 Sat 02:55]
-   Using ~.cloneNode~, but we'll also need to recursively resolve ~<use>~ tags
+   Using ~.cloneNode~, but we'll also need to recursively resolve ~<use>~ elements
 
 * API
 
@@ -19,6 +19,6 @@
 
 * UX
 
-** DONE Marvel-esque clickbox
-   CLOSED: [2017-12-16 Sat 19:40]
+** IN-PROGRESS Marvel-esque clickbox
    Can find better animation probably but it works
+   Going to need to insert a translucent wrapping node in there; for overlapping hitareas
