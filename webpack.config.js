@@ -1,8 +1,8 @@
 const path = require('path');
 
 const config = {
-  //entry: './demo/demo_nakama_full.js',
-  entry: './demo/demo_nested_uses.js',
+  entry: './demo/demo_nakama_full.js',
+  //entry: './demo/demo_nested_uses.js',
   //entry: './demo/demo_simple_clone.js',
   devtool: 'cheap-module-inline-source-map',
   output: {

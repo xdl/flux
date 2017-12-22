@@ -1,5 +1,6 @@
 const INKSCAPE_TITLE_TAG = 'title'
 const CLASS_HINTBOX = 'fadey'
+const HINT_FADEOUT_SECONDS = 0.6
 const REPLICANT_MARKER = 'replicant'
 const SVGNS = "http://www.w3.org/2000/svg"
 const SVGNSX = "http://www.w3.org/1999/xlink"
@@ -235,9 +236,8 @@ const augmentWithHints = (display_object) => {
 
   //init. Default true
   let enableHints = true
-  let remove_existing_hint_nodes = []
 
-  const createRemoveHintNode = (parent_node, hint_node) => {
+  const createRemoveHintNodeFn = (parent_node, hint_node) => {
     return () => {
       parent_node.removeChild(hint_node)
     }
@@ -245,17 +245,6 @@ const augmentWithHints = (display_object) => {
 
   const showClickableAreas = () => {
 
-    //display_object._node.appendChild(generateHintBox({
-      //x: 41,
-      //y: 73,
-      //width: 50,
-      //height: 100
-    //}))
-    
-    for (const remove of remove_existing_hint_nodes) {
-      remove()
-    }
-    remove_existing_hint_nodes = []
     //do a tree search
     const to_visit = [display_object]
     while (to_visit.length > 0) {
@@ -264,13 +253,14 @@ const augmentWithHints = (display_object) => {
         if (child.buttonMode) {
           const hint_box = generateHintBox(child._node.getBBox(), child._node.getAttribute('transform'))
           visiting._node.appendChild(hint_box)
-          remove_existing_hint_nodes.push(createRemoveHintNode(visiting._node, hint_box))
+          window.setTimeout(createRemoveHintNodeFn(visiting._node, hint_box),HINT_FADEOUT_SECONDS * 1000)
         }
         to_visit.push(child)
       }
     }
   }
 
+  //init
   display_object.addEventListener('click', showClickableAreas)
 
   return Object.assign(display_object, {
@@ -279,6 +269,7 @@ const augmentWithHints = (display_object) => {
       },
       set enableHints(_enableHints) {
         enableHints = _enableHints
+        //TODO: toggle this
       }
     })
 }
@@ -313,7 +304,7 @@ module.exports = {
     style.type = 'text/css'
     const hints_css = `
       .${CLASS_HINTBOX} {
-        animation: fadeInOut 0.6s ease-out forwards;
+        animation: fadeInOut ${HINT_FADEOUT_SECONDS}s ease-out forwards;
       }
       @keyframes fadeInOut {
         0%, 100% { opacity: 0; }

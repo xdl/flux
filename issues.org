@@ -19,6 +19,7 @@
 
 * UX
 
-** IN-PROGRESS Marvel-esque clickbox
+** DONE Marvel-esque clickbox
+   CLOSED: [2017-12-22 Fri 15:02]
    Can find better animation probably but it works
    Going to need to insert a translucent wrapping node in there; for overlapping hitareas
