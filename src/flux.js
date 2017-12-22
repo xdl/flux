@@ -214,7 +214,7 @@ const createStageNode = (inkscape_container) => {
   return stage_node
 }
 
-const generateHintBox = (bbox) => {
+const generateHintBox = (bbox, transform_attributes) => {
   const node = document.createElementNS(SVGNS, 'rect')
   node.style.opacity = 1;
   node.style.fill = '#851422';
@@ -227,6 +227,7 @@ const generateHintBox = (bbox) => {
   node.setAttribute('x', bbox.x)
   node.setAttribute('y', bbox.y)
   node.setAttribute('class', CLASS_HINTBOX)
+  node.setAttribute('transform', transform_attributes)
   return node
 }
 
@@ -234,7 +235,13 @@ const augmentWithHints = (display_object) => {
 
   //init. Default true
   let enableHints = true
-  let hint_nodes = []
+  let remove_existing_hint_nodes = []
+
+  const createRemoveHintNode = (parent_node, hint_node) => {
+    return () => {
+      parent_node.removeChild(hint_node)
+    }
+  }
 
   const showClickableAreas = () => {
 
@@ -245,27 +252,22 @@ const augmentWithHints = (display_object) => {
       //height: 100
     //}))
     
-    const button_mode_bboxes = []
-
+    for (const remove of remove_existing_hint_nodes) {
+      remove()
+    }
+    remove_existing_hint_nodes = []
     //do a tree search
     const to_visit = [display_object]
     while (to_visit.length > 0) {
       const visiting = to_visit.pop()
       for (const child of visiting._children) {
         if (child.buttonMode) {
-          button_mode_bboxes.push(child._node.getBBox())
+          const hint_box = generateHintBox(child._node.getBBox(), child._node.getAttribute('transform'))
+          visiting._node.appendChild(hint_box)
+          remove_existing_hint_nodes.push(createRemoveHintNode(visiting._node, hint_box))
         }
         to_visit.push(child)
       }
-    }
-    //remove old hint nodes
-    for (const hint_node of hint_nodes) {
-      display_object._node.removeChild(hint_node)
-    }
-    //add new ones
-    hint_nodes = button_mode_bboxes.map(generateHintBox)
-    for (const hint_node of hint_nodes) {
-      display_object._node.appendChild(hint_node)
     }
   }
 
@@ -311,7 +313,7 @@ module.exports = {
     style.type = 'text/css'
     const hints_css = `
       .${CLASS_HINTBOX} {
-        animation: fadeInOut 0.4s linear forwards;
+        animation: fadeInOut 0.6s ease-out forwards;
       }
       @keyframes fadeInOut {
         0%, 100% { opacity: 0; }
