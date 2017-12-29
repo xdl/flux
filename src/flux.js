@@ -11,6 +11,16 @@ const {
   parseTranslateAttribute
 } = require('./lib/decompose.js')
 
+const getTitle = (elem) => {
+  for (let i = 0; i < elem.children.length; i++) {
+    const child = elem.children[i]
+    if (child.tagName === INKSCAPE_TITLE_TAG) {
+      return child.innerHTML
+    }
+  }
+  return null
+}
+
 const wrapInstances = (node, node_name) => {
   const instances = {}
   //Second use of the title element:
@@ -23,16 +33,6 @@ const wrapInstances = (node, node_name) => {
     const display_object = augmentWithInstances(DisplayObject(elem, t_list.slice(1), name, translate[0], translate[1]), node_name)
     return display_object
   }
-  const getTitle = (elem) => {
-    for (let i = 0; i < elem.children.length; i++) {
-      const child = elem.children[i]
-      if (child.tagName === INKSCAPE_TITLE_TAG) {
-        return child.innerHTML
-      }
-    }
-    return null
-  }
-
   const to_visit = [node]
   while (to_visit.length > 0) {
     const visiting = to_visit.pop()
@@ -185,20 +185,29 @@ const instantiateNode = (elem, name, inkscape_node) => {
   return _instantiateNode(elem, inkscape_node)
 }
 
+const directInkscapeChildIsLayer = (node) => {
+  return node.tagName === 'g'
+}
+
 const Library = (inkscape_node) => {
   const directory = {}
   //First use of title elements:
-  //1. As a class that's been 'Export for Actionscript'd
-  const title_elements = Array.prototype.slice.call(inkscape_node.getElementsByTagName(INKSCAPE_TITLE_TAG))
-  for (const title of title_elements) {
-    const name = title.innerHTML
-    const elem = title.parentNode
-    directory[name] = () => {
-      const node = instantiateNode(elem, name, inkscape_node)
-      const bbox = elem.getBBox()
-      const transform_offsets = [`translate(${-bbox.x}, ${-bbox.y})`]
-      return augmentWithInstances(
-        DisplayObject(node, transform_offsets, name), name)
+  //1. As a class that's been 'Export for Actionscript'd, if it's directly exposed in a layer
+  for (let i = 0; i < inkscape_node.children.length; i++) {
+    if (directInkscapeChildIsLayer(inkscape_node.children[i])) { //if layer
+      for (let j = 0; j < inkscape_node.children[i].children.length; j++) {
+        const child_node = inkscape_node.children[i].children[j]
+        const title = getTitle(child_node)
+        if (title) {
+          directory[title] = () => {
+            const node = instantiateNode(child_node, title, inkscape_node)
+            const bbox = child_node.getBBox()
+            const transform_offsets = [`translate(${-bbox.x}, ${-bbox.y})`]
+            return augmentWithInstances(
+              DisplayObject(node, transform_offsets, title), title)
+          }
+        }
+      }
     }
   }
   return directory

@@ -17,9 +17,16 @@
    CLOSED: [2017-12-16 Sat 02:55]
    * Do the common events: 'click', 'mouseover', 'mouseout'
 
+* Implementation
+
+** TODO Consider only populating library with direct descendants of layers
+   This will stop polluting the library namespace but wondering if it's necessary at all?
+
 * UX
 
 ** DONE Marvel-esque clickbox
    CLOSED: [2017-12-22 Fri 15:02]
    Can find better animation probably but it works
    Going to need to insert a translucent wrapping node in there; for overlapping hitareas
+** TODO Flashy transition animations
+   E.g. Framer-esque ones
