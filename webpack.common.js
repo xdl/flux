@@ -1,13 +1,11 @@
 const path = require('path');
 
 const config = {
-  entry: './demo/demo_nakama_full.js',
-  //entry: './demo/demo_nested_uses.js',
-  //entry: './demo/demo_simple_clone.js',
-  devtool: 'cheap-module-inline-source-map',
+  entry: './src/flux.js',
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js'
+    path: path.resolve(__dirname, 'bin'),
+    filename: 'flux.js',
+    library: 'flux'
   },
   module: {
     rules: [{

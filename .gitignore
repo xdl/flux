@@ -1,5 +1,7 @@
 /devlog.md
 /node_modules
 /dist
+/bin
+/preview
 *~
 .DS_Store

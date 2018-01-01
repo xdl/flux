@@ -305,9 +305,11 @@ const fluxInit = (stage_element, inkscape_container) => {
 }
 
 module.exports = {
+  version: '0.0.0',
   init: (stage_element, library_element, callback) => {
     const inkscape_container = library_element.contentDocument.firstElementChild
 
+    //TODO: put this header mutation into a separate function
     //adding some keyframe data. We'll need this when we don't want to manually do stuff to the index.html of the demo
     const style = document.createElement('style')
     style.type = 'text/css'

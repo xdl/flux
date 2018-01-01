@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Cloning Test</title>
+  <script src="flux.js"></script>
+  <script>
+  window.init = function() {
+    var inkscapeSvg = document.getElementById('inkscape-svg');
+    inkscapeSvg.style.display = 'none';
+    flux.init(document.getElementById('stage'), inkscapeSvg, function(stage, library) {
+      var group_with_clone = library.GroupWithClone();
+      stage.addChild(group_with_clone);
+    })
+  }
+  </script>
+</head>
+<body>
+  <div id='stage'></div>
+  <object onload=init() id='inkscape-svg' type="image/svg+xml" data="simple_cloning.svg"></object>
+</body>
+</html>
