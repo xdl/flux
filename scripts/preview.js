@@ -1,6 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 const http = require('http')
+const copySync = require('./lib/lib.js').copySync
 
 const PREVIEW_DIR = path.join(__dirname, '../preview')
 const BIN_DIR = path.join(__dirname, '../bin')
@@ -20,14 +21,6 @@ const hashToPort = (str) => {
   return 5000 + hash % 5000
 }
 
-//https://stackoverflow.com/questions/11293857/fastest-way-to-copy-file-in-node-js
-const copySync = (src, dst) => {
-  if (!fs.existsSync(src)) {
-    return false;
-  }
-  const data = fs.readFileSync(src, 'utf-8');
-  fs.writeFileSync(dst, data);
-}
 
 copySync(
   path.join(BIN_DIR, 'flux.js'),

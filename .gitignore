@@ -3,5 +3,6 @@
 /dist
 /bin
 /preview
+/scripts/deploy.sh
 *~
 .DS_Store
