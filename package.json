@@ -3,8 +3,10 @@
   "scripts": {
     "build": "webpack --config webpack.prod.js",
     "start": "node scripts/dev.js",
-    "examples": "scripts/copy_examples.sh && npm run preview",
-    "preview": "npm run build && node scripts/preview.js"
+    "examples": "scripts/copy_examples.sh",
+    "bootstrap": "node scripts/bootstrap.js",
+    "preview": "node scripts/preview.js",
+    "devpreview": "node scripts/devpreview.js"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
