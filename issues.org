@@ -15,12 +15,23 @@
    e.g. ~library.apps().play_btn.addEventListener("click", () => {})~
 ** DONE ~addEventListener~
    CLOSED: [2017-12-16 Sat 02:55]
-   * Do the common events: 'click', 'mouseover', 'mouseout'
+   Do the common events: 'click', 'mouseover', 'mouseout'
 
 * Implementation
 
-** TODO Consider only populating library with direct descendants of layers
+** TODO Figure out how to embed fonts
+** TODO Be able to change text on ~tspan~ elements
+** DONE Consider only populating library with direct descendants of layers
+   CLOSED: [2018-01-02 Tue 01:39]
    This will stop polluting the library namespace but wondering if it's necessary at all?
+
+* Bugs
+
+** TODO Petweetdish: Background for button not showing up [1/2]
+   - [X] Reproduce. Issue was to do with cloning a ~rect~
+   - [ ] Fix
+** TODO Diagram connectors
+   These don't work. But they don't particularly work in Inkscape either
 
 * UX
 

@@ -3,11 +3,11 @@ const config = require('../webpack.dev.js')
 const path = require('path')
 const fs = require('fs')
 
-const BIN_DIR = path.join(__dirname, '../bin')
+const PREVIEW_DIR = path.join(__dirname, '../preview')
 
 const dev = () => {
-  if (!fs.existsSync(BIN_DIR)){
-    fs.mkdirSync(BIN_DIR)
+  if (!fs.existsSync(PREVIEW_DIR)){
+    fs.mkdirSync(PREVIEW_DIR)
   }
 
   webpack(config, (err, stats) => {

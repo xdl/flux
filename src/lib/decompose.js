@@ -73,8 +73,10 @@ const calculateNodeTranslation = (node) => {
   if (transform && transform.startsWith('translate')) {
     return parseTranslateAttribute(transform)
   } else {
-    return [parseFloat(node.getAttribute('x')) || 0,
-      parseFloat(node.getAttribute('y')) || 0]
+    return [0, 0];
+    //Don't need to do this; Inkscape automagically's incorporated the non-g element's x and y attribute into transform
+    //return [parseFloat(node.getAttribute('x')) || 0,
+      //parseFloat(node.getAttribute('y')) || 0]
   }
 }
 

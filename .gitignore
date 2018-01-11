@@ -4,5 +4,6 @@
 /bin
 /preview
 /scripts/deploy.sh
+/npm-debug.log
 *~
 .DS_Store

@@ -3,7 +3,7 @@ const path = require('path');
 const config = {
   entry: './src/flux.js',
   output: {
-    path: path.resolve(__dirname, 'bin'),
+    path: path.resolve(__dirname, 'preview'),
     filename: 'flux.js',
     library: 'flux'
   },
