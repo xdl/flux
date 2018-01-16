@@ -1,13 +1,14 @@
 const INKSCAPE_TITLE_TAG = 'title'
 const CLASS_HINTBOX = 'fadey'
 const HINT_FADEOUT_SECONDS = 0.6
+//const HINT_FADEOUT_SECONDS = 60
 const REPLICANT_MARKER = 'replicant'
 const SVGNS = "http://www.w3.org/2000/svg"
 const SVGNSX = "http://www.w3.org/1999/xlink"
 const {
   decomposeTransformAttribute,
   calculateNodeTranslation,
-  transformAttributeToStringList,
+  getTransformAttributeStringList,
   parseTranslateAttribute
 } = require('./lib/decompose.js')
 
@@ -25,9 +26,8 @@ const wrapInstances = (node, node_name) => {
   const instances = {}
   //Second use of the title element:
   //2. As an exposed instance name in an instantiated class from the Library
-  const displayObjectify = (elem) => {
-    const transform = elem.getAttribute('transform')
-    const t_list = transformAttributeToStringList(transform)
+  const displayObjectify = (elem, title) => {
+    const t_list = getTransformAttributeStringList(elem)
     //assume the last one has a translation transformation:
     const translate = parseTranslateAttribute(t_list[0])
     const display_object = augmentWithInstances(DisplayObject(elem, t_list.slice(1), name, translate[0], translate[1]), node_name)
@@ -258,7 +258,7 @@ const augmentWithHints = (display_object) => {
     const to_visit = [display_object]
     while (to_visit.length > 0) {
       const visiting = to_visit.pop()
-      for (const child of visiting._children) {
+      for (const child of visiting._children) { //I think this is the key. Can't be _children, but must get nodeList children.
         if (child.buttonMode) {
           const hint_box = generateHintBox(child._node.getBBox(), child._node.getAttribute('transform'))
           visiting._node.appendChild(hint_box)

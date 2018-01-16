@@ -17,7 +17,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.2 5c3e80d, 2017-08-06"
-   sodipodi:docname="nested_uses.svg">
+   sodipodi:docname="nested_uses_naked.svg">
   <defs
      id="defs2">
     <linearGradient
@@ -46,8 +46,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.59910008"
-     inkscape:cx="128.15057"
-     inkscape:cy="650.87227"
+     inkscape:cx="93.097993"
+     inkscape:cy="712.63157"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -90,7 +90,8 @@
          y="115.48817"
          x="37.53894"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:0;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-         xml:space="preserve"><tspan
+         xml:space="preserve"><title
+           id="title2600">cool_btn_text</title><tspan
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
            y="115.48817"
            x="37.53894"
@@ -119,10 +120,7 @@
          id="use858"
          width="100%"
          height="100%"
-         transform="matrix(0.68234576,0,0,0.67954153,-43.222189,95.273279)">
-        <title
-           id="title861">my_cool_btn</title>
-      </use>
+         transform="matrix(0.68234576,0,0,0.67954153,-43.222189,95.273279)" />
       <text
          id="text832"
          y="91.198265"
@@ -167,10 +165,7 @@
          id="use893"
          width="100%"
          height="100%"
-         transform="translate(75.961154,94.509808)">
-        <title
-           id="title896">widget</title>
-      </use>
+         transform="translate(75.961154,94.509808)" />
     </g>
   </g>
 </svg>

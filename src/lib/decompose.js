@@ -87,7 +87,22 @@ const transformAttributeToStringList = (transform_string) => {
   return transform_string.trim().split("\n").map(t => t.trim())
 }
 
+const getTransformAttributeStringList = (element) => {
+  const transform = element.getAttribute('transform')
+  if (transform) {
+    return transformAttributeToStringList(transform)
+  } else {
+    //TODO: do scale as well here?
+    const x = element.getAttribute('x')
+    const y = element.getAttribute('y')
+    return [
+      //`translate(${x || 0},${y || 0})`
+      `translate(${0},${0})`
+    ]
+  }
+}
+
 exports.parseTranslateAttribute = parseTranslateAttribute
-exports.transformAttributeToStringList = transformAttributeToStringList
+exports.getTransformAttributeStringList = getTransformAttributeStringList
 exports.decomposeTransformAttribute = decomposeTransformAttribute
 exports.calculateNodeTranslation = calculateNodeTranslation

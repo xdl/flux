@@ -15,6 +15,16 @@ const generateTemplate = (title, rel_svg_filepath) => {
       var inkscapeSvg = document.getElementById('inkscape-svg');
       inkscapeSvg.style.display = 'none';
       flux.init(document.getElementById('stage'), inkscapeSvg, function(stage, library) {
+        /* Put stuff here, e.g.
+        var home_screen = library.HomeScreen();
+        var about_screen = library.AboutScreen();
+        stage.addChild(home_screen);
+        home_screen.menu_btn.buttonMode = true;
+        home_screen.menu_btn.addEventListener('click', function() {
+          stage.removeChild(home_screen);
+          stage.addChild(about_screen);
+        });
+        */
       });
     }
     </script>
