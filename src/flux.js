@@ -1,8 +1,11 @@
 const INKSCAPE_TITLE_TAG = 'title'
 const CLASS_HINTBOX = 'fadey'
 const HINT_FADEOUT_SECONDS = 0.6
-//const HINT_FADEOUT_SECONDS = 60
+
+//dom attributes
 const REPLICANT_MARKER = 'replicant'
+const BUTTON_MODE = 'buttonMode'
+
 const SVGNS = "http://www.w3.org/2000/svg"
 const SVGNSX = "http://www.w3.org/1999/xlink"
 const {
@@ -110,6 +113,11 @@ const DisplayObject = (dom_node, transform_offsets, name, x = 0, y = 0) => {
     },
     set buttonMode(_buttonMode) {
       buttonMode = _buttonMode
+      if (buttonMode) { //for the dom traversal to pick up on when clicked
+        dom_node.setAttribute(BUTTON_MODE, true)
+      } else {
+        dom_node.removeAttribute(BUTTON_MODE)
+      }
       applyStyling()
     },
     addEventListener: (eventType, fn, useCapture = false) => { //useCapture default is false
@@ -257,14 +265,15 @@ const augmentWithHints = (display_object) => {
   const showClickableAreas = () => {
 
     //do a tree search
-    const to_visit = [display_object]
+    const to_visit = [display_object._node]
     while (to_visit.length > 0) {
       const visiting = to_visit.pop()
-      for (const child of visiting._children) { //I think this is the key. Can't be _children, but must get nodeList children.
-        if (child.buttonMode) {
-          const hint_box = generateHintBox(child._node.getBBox(), child._node.getAttribute('transform'))
-          visiting._node.appendChild(hint_box)
-          window.setTimeout(createRemoveHintNodeFn(visiting._node, hint_box),HINT_FADEOUT_SECONDS * 1000)
+      for (let i = 0; i < visiting.children.length; i++) {
+        const child = visiting.children[i]
+        if (child.getAttribute(BUTTON_MODE)) {
+          const hint_box = generateHintBox(child.getBBox(), child.getAttribute('transform'))
+          visiting.appendChild(hint_box)
+          window.setTimeout(createRemoveHintNodeFn(visiting, hint_box),HINT_FADEOUT_SECONDS * 1000)
         }
         to_visit.push(child)
       }
