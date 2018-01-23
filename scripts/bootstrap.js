@@ -9,11 +9,12 @@ const generateTemplate = (title, rel_svg_filepath) => {
   <head>
     <meta charset="UTF-8">
     <title>${title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="flux.js"></script>
     <script>
     window.init = function() {
       var inkscapeSvg = document.getElementById('inkscape-svg');
-      inkscapeSvg.style.display = 'none';
+      inkscapeSvg.style.display = 'none'; //uncomment this back in for debugging purposes
       flux.init(document.getElementById('stage'), inkscapeSvg, function(stage, library) {
         /* Put stuff here, e.g.
         var home_screen = library.HomeScreen();
@@ -42,7 +43,7 @@ const bootstrap = (source) => {
     process.exit(1)
   }
   const {
-    base,
+    base, //file.txt
     dir,
     name
   } = path.parse(source)

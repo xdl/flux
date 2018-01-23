@@ -47,9 +47,9 @@ const parseTranslateAttribute = (m) => {
 
 //fairly sure inkscape doesn't use compound transforms, e.g. translate(x,y)scale(a,b)
 const decomposeTransformAttribute = (transform) => {
-  if (transform.startsWith('matrix')) {
+  if (transform && transform.startsWith('matrix')) {
     return decomposeMatrix(parseMatrix(transform))
-  } else if (transform.startsWith('translate')) {
+  } else if (transform && transform.startsWith('translate')) {
     return {
       translate: parseTranslateAttribute(transform),
       rotate: 0,
@@ -57,7 +57,7 @@ const decomposeTransformAttribute = (transform) => {
       skew: 0
     }
   } else {
-    console.error('yikes, not sure about this one: ', transform)
+    //console.error('yikes, not sure about this one: ', transform)
     return {
       translate: [0, 0],
       rotate: 0,

@@ -145,15 +145,17 @@ const _instantiateNode = (elem, inkscape_node) => {
     const transform_string = use_node.getAttribute('transform')
     const use_transform = decomposeTransformAttribute(transform_string)
     const replacement_id = use_node.getAttribute('xlink:href').slice(1)
+
     const replacement_node = inkscape_node.getElementById(replacement_id)
     const replaced_node = instantiate(replacement_node)
-    const followed_transform = calculateNodeTranslation(replaced_node);
+    const followed_transform = decomposeTransformAttribute(replaced_node.getAttribute('transform'))
 
     //TODO: understand why this works, and how coordinate systems behave with use elements properly
     replaced_node.setAttribute('transform', `
       translate(${use_transform.translate[0]},${use_transform.translate[1]})
       scale(${use_transform.scale[0]},${use_transform.scale[1]})
-      translate(${followed_transform[0]},${followed_transform[1]})
+      translate(${followed_transform.translate[0]},${followed_transform.translate[1]})
+      scale(${followed_transform.scale[0]},${followed_transform.scale[1]})
     `)
 
     //set a marker for the replaced node so that when we instantiate instances, it doesn't traverse past this point
@@ -305,7 +307,7 @@ const fluxInit = (stage_element, inkscape_container) => {
 }
 
 module.exports = {
-  version: '0.0.0',
+  version: '0.0.1',
   init: (stage_element, library_element, callback) => {
     const inkscape_container = library_element.contentDocument.firstElementChild
 
