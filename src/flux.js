@@ -284,6 +284,7 @@ const augmentWithHints = (display_object) => {
   display_object.addEventListener('click', showClickableAreas)
 
   return Object.assign(display_object, {
+      _showClickableAreas: showClickableAreas,
       get enableHints() {
         return enableHints
       },
@@ -335,12 +336,14 @@ module.exports = {
     style.innerHTML = hints_css
     document.getElementsByTagName('head')[0].appendChild(style)
 
-    const flux = {} //TODO: get some sick helper methods in here yo
 
     const {
       stage,
       library
     } = fluxInit(stage_element, inkscape_container)
-    return callback(stage, library, flux)
+    const helpers = {
+      showClickableAreas: stage._showClickableAreas
+    }
+    return callback(stage, library, helpers)
   }
 }
