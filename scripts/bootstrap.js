@@ -15,7 +15,7 @@ const generateTemplate = (title, rel_svg_filepath) => {
     window.init = function() {
       var inkscapeSvg = document.getElementById('inkscape-svg');
       inkscapeSvg.style.display = 'none'; //uncomment this back in for debugging purposes
-      flux.init(document.getElementById('stage'), inkscapeSvg, function(stage, library) {
+      flux.init(document.getElementById('stage'), inkscapeSvg, function(stage, library, helpers) {
         /* Put stuff here, e.g.
         var home_screen = library.HomeScreen();
         var about_screen = library.AboutScreen();
@@ -25,6 +25,11 @@ const generateTemplate = (title, rel_svg_filepath) => {
           stage.removeChild(home_screen);
           stage.addChild(about_screen);
         });
+
+        //show clickable areas, even when you haven't clicked on the svg element
+        window.addEventListener('click', function() {
+          helpers.showClickableAreas()
+        })
         */
       });
     }
