@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>petweetdish</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="flux.js"></script>
+    <style>
+     @font-face {
+        font-family: '[z] Arista';
+        src: url('[z] Arista Trial.ttf');
+     }
+
+    </style>
+    <script>
+    window.init = function() {
+      var inkscapeSvg = document.getElementById('inkscape-svg');
+      flux.init(document.getElementById('stage'), inkscapeSvg, function(stage, library, helpers) {
+
+        var page_start = library.page_start();
+        var page_running = library.page_running();
+
+        page_start.buttonNucleate.buttonMode = true;
+        page_start.buttonNucleate.addEventListener('click', function() {
+          stage.removeChild(page_start);
+          stage.addChild(page_running);
+        })
+
+        page_running.buttonStop.buttonMode = true;
+        page_running.buttonStop.addEventListener('click', function() {
+          stage.removeChild(page_running);
+          stage.addChild(page_start);
+        });
+
+        //init
+        stage.addChild(page_start);
+
+        window.addEventListener('click', function() {
+          helpers.showClickableAreas()
+        })
+        inkscapeSvg.style.display = 'none'; //uncomment this back in for debugging purposes
+      });
+    }
+    </script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,700">
+  <body>
+    <div id="stage"></div>
+    <object onload="init()" id="inkscape-svg" type="image/svg+xml" data="petweetdish.svg"></object>
+  
+
+</body></html>

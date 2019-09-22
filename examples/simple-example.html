@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Example Test</title>
+  <script src="flux.js"></script>
+  <script>
+  window.init = function() {
+    var inkscapeSvg = document.getElementById('inkscape-svg');
+    flux.init(document.getElementById('stage'), inkscapeSvg, function(stage, library, helpers) {
+
+      var screen1 = library.Screen1();
+      var screen2 = library.Screen2();
+
+      screen1.next_screen_button.buttonMode = true;
+      screen1.next_screen_button.addEventListener('click', function() {
+        stage.removeChild(screen1);
+        stage.addChild(screen2);
+      });
+
+      screen2.prev_screen_button.buttonMode = true;
+      screen2.prev_screen_button.addEventListener('click', function() {
+        stage.removeChild(screen2);
+        stage.addChild(screen1);
+      });
+
+      stage.addChild(screen1);
+
+      window.addEventListener('click', function() {
+        helpers.showClickableAreas();
+      })
+
+      // This should be done at the last step
+      inkscapeSvg.style.display = 'none';
+    })
+  }
+  </script>
+</head>
+<body>
+  <div id='stage'></div>
+  <object onload=init() id='inkscape-svg' type="image/svg+xml" data="simple-example.svg"></object>
+</body>
+</html>

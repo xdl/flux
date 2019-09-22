@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="793.70081"
+   height="1122.5197"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg132"
+   inkscape:version="0.92.4 (unknown)"
+   sodipodi:docname="simple-example.svg">
+  <defs
+     id="defs126" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="396.28571"
+     inkscape:cy="851.42857"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="740"
+     inkscape:window-x="255"
+     inkscape:window-y="1080"
+     inkscape:window-maximized="1"
+     units="px"
+     inkscape:snap-global="false" />
+  <metadata
+     id="metadata129">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3865"
+       transform="translate(-17.235714,-18.861012)">
+      <title
+         id="title3875">Screen1</title>
+      <rect
+         y="34.93018"
+         x="26.401609"
+         height="63.84024"
+         width="85.914047"
+         id="rect134"
+         style="fill:#6f6f91;stroke:#000000;stroke-width:0.52910483" />
+      <text
+         id="text138"
+         y="46.658249"
+         x="43.454273"
+         style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="46.658249"
+           x="43.454273"
+           id="tspan136"
+           sodipodi:role="line">Screen 1</tspan></text>
+      <g
+         id="g4552"
+         transform="translate(25.526732,-24.177129)">
+        <title
+           id="title4554">next_screen_button</title>
+        <rect
+           ry="1.0760145"
+           rx="0.90530264"
+           y="112.95779"
+           x="52.192917"
+           height="6.8147583"
+           width="31.685591"
+           id="rect841"
+           style="fill:#de8787;fill-opacity:1;stroke:#000000;stroke-width:0.3289915" />
+        <text
+           id="text34"
+           y="117.90616"
+           x="55.119705"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332"
+             y="117.90616"
+             x="55.119705"
+             id="tspan32"
+             sodipodi:role="line">Next Screen</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g3873"
+       transform="matrix(0.99999823,0,0,1.0005768,91.470854,-17.820093)">
+      <title
+         id="title3877">Screen2</title>
+      <rect
+         style="fill:#de8787;stroke:#000000;stroke-width:0.52894932"
+         id="rect3867"
+         width="85.914207"
+         height="63.802597"
+         x="25.078615"
+         y="32.548851" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         x="44.954441"
+         y="44.134201"
+         id="text3871"><tspan
+           sodipodi:role="line"
+           id="tspan3869"
+           x="44.954441"
+           y="44.134201"
+           style="stroke-width:0.26458332">Screen 2</tspan></text>
+      <g
+         id="g4552-2"
+         transform="matrix(1.0000018,0,0,0.99942352,-23.145639,-26.789651)">
+        <title
+           id="title4554-9">prev_screen_button</title>
+        <rect
+           ry="1.0760145"
+           rx="0.90530264"
+           y="112.95779"
+           x="52.192917"
+           height="6.8147583"
+           width="31.685591"
+           id="rect841-7"
+           style="fill:#6f6f91;fill-opacity:1;stroke:#000000;stroke-width:0.3289915" />
+        <text
+           id="text34-5"
+           y="117.90616"
+           x="55.119705"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332"
+             y="117.90616"
+             x="55.119705"
+             id="tspan32-6"
+             sodipodi:role="line">Prev Screen</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>
