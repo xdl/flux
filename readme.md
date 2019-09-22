@@ -45,7 +45,7 @@ flux.init(document.getElementById('stage'), inkscapeSvg, function(stage, library
 
 To produce:
 
-![Simple Example](assets/simple-example.png)
+![Simple Example](assets/simple-example.gif)
 
 There are also the following fields exposed:
 
@@ -87,7 +87,7 @@ The viewport of the stage is set to the same dimensions as the Inkscape canvas, 
 * Open Document properties
     * Set Custom Size on Orientation to be in pixels
     
-[Document Properties](assets/document-properties.png)
+![Document Properties](assets/document-properties.png)
 
 ### BBbox Computation
 
