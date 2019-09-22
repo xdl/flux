@@ -41,12 +41,12 @@ const parseMatrix = (m) => {
 }
 
 //'translate(23, 31)' → [23, 31]
-const parseTranslateAttribute = (m) => {
+export const parseTranslateAttribute = (m) => {
   return m.slice('translate('.length, -1).split(',').map(parseFloat)
 }
 
 //fairly sure inkscape doesn't use compound transforms, e.g. translate(x,y)scale(a,b)
-const decomposeTransformAttribute = (transform) => {
+export const decomposeTransformAttribute = (transform) => {
   if (transform && transform.startsWith('matrix')) {
     return decomposeMatrix(parseMatrix(transform))
   } else if (transform && transform.startsWith('translate')) {
@@ -68,7 +68,7 @@ const decomposeTransformAttribute = (transform) => {
 }
 
 //presense of transform offsets it
-const calculateNodeTranslation = (node) => {
+export const calculateNodeTranslation = (node) => {
   const transform = node.getAttribute('transform')
   if (transform && transform.startsWith('translate')) {
     return parseTranslateAttribute(transform)
@@ -87,7 +87,7 @@ const transformAttributeToStringList = (transform_string) => {
   return transform_string.trim().split("\n").map(t => t.trim())
 }
 
-const getTransformAttributeStringList = (element) => {
+export const getTransformAttributeStringList = (element) => {
   const transform = element.getAttribute('transform')
   if (transform) {
     return transformAttributeToStringList(transform)
@@ -101,8 +101,3 @@ const getTransformAttributeStringList = (element) => {
     ]
   }
 }
-
-exports.parseTranslateAttribute = parseTranslateAttribute
-exports.getTransformAttributeStringList = getTransformAttributeStringList
-exports.decomposeTransformAttribute = decomposeTransformAttribute
-exports.calculateNodeTranslation = calculateNodeTranslation

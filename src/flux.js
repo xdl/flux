@@ -208,11 +208,13 @@ const Library = (inkscape_node) => {
       for (let j = 0; j < inkscape_node.children[i].children.length; j++) {
         const child_node = inkscape_node.children[i].children[j]
         const title = getTitle(child_node)
+
         if (title) {
+          const bbox = child_node.getBBox()
           directory[title] = () => {
             const node = instantiateNode(child_node, title, inkscape_node)
-            const bbox = child_node.getBBox()
             const transform_offsets = [`translate(${-bbox.x}, ${-bbox.y})`]
+
             return augmentWithInstances(
               DisplayObject(node, transform_offsets, title), title)
           }
@@ -316,7 +318,7 @@ const fluxInit = (stage_element, inkscape_container) => {
   }
 }
 
-module.exports = {
+export default {
   version: '0.0.1',
   init: (stage_element, library_element, callback) => {
     const inkscape_container = library_element.contentDocument.firstElementChild
@@ -341,9 +343,10 @@ module.exports = {
       stage,
       library
     } = fluxInit(stage_element, inkscape_container)
+
     const helpers = {
       showClickableAreas: stage._showClickableAreas
     }
-    return callback(stage, library, helpers)
+    return callback(stage, library, helpers);
   }
 }

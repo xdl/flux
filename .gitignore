@@ -1,9 +1,6 @@
 /devlog.md
 /node_modules
-/dist
-/bin
-/preview
-/scripts/deploy.sh
 /npm-debug.log
 *~
 .DS_Store
+/examples/flux.js
