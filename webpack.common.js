@@ -5,7 +5,9 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'bin'),
     filename: 'flux.js',
-    library: 'flux'
+    library: 'flux',
+    libraryExport: 'default',
+    libraryTarget: 'umd'
   },
   module: {
     rules: [{
