@@ -1,6 +1,6 @@
 # FlUX
 
-OSS based UX workflow with Inkscape and JavaScript, using DisplayObject style bindings.
+Create interactive UX mockups with Inkscape and JavaScript.
 
 ![Preview](assets/nakama-mockup.gif)
 
@@ -43,6 +43,8 @@ flux.init(document.getElementById('stage'), inkscapeSvg, function(stage, library
 }
 ```
 
+`helpers.showClickableAreas()` adds [Marvel](https://marvelapp.com)-style hotspots to the clickable areas.
+
 To produce:
 
 ![Simple Example](assets/simple-example.gif)
@@ -64,7 +66,7 @@ There is a minified drop-in version of FlUX in `bin/flux`, which can be added to
     
     npm install --production
 
-    npm install run-examples
+    npm run serve-examples
 
 ### Development
 
@@ -91,4 +93,6 @@ The viewport of the stage is set to the same dimensions as the Inkscape canvas, 
 
 ### BBbox Computation
 
-In order to calculate the offsets of object groups to offset them to zero, if you want to hide the loaded Inkscape SVG, make sure to instantiate FlUX objects first. See the examples for when to do so.
+The Inkscape SVG needs to be visible (at least initially) in order to calculate the offsets of object groups so that they can be set to zero.
+
+If you want to hide the Inkscape SVG, make sure to do this after instantiating FlUX, e.g. see the examples for when to do `inkscapeSvgElement.style.display = 'none'`.
