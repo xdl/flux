@@ -26,18 +26,19 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="409.78571"
-     inkscape:cy="811.42857"
+     inkscape:cx="583.28571"
+     inkscape:cy="971.42857"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1366"
      inkscape:window-height="740"
-     inkscape:window-x="255"
-     inkscape:window-y="1080"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      units="px"
-     inkscape:snap-global="false" />
+     inkscape:snap-global="true"
+     inkscape:snap-page="true" />
   <metadata
      id="metadata129">
     <rdf:RDF>
@@ -56,7 +57,7 @@
      id="layer1">
     <g
        id="g3865"
-       transform="translate(-11.944047,4.9514877)">
+       transform="translate(-26.401609,-34.93018)">
       <title
          id="title3875">Screen1</title>
       <rect
@@ -106,7 +107,7 @@
     </g>
     <g
        id="g3873"
-       transform="matrix(0.99999823,0,0,1.0005768,87.502104,5.7278237)">
+       transform="matrix(0.99999823,0,0,1.0005768,99.007381,-32.567625)">
       <title
          id="title3877">Screen2</title>
       <rect

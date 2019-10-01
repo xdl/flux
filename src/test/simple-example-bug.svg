@@ -15,7 +15,7 @@
    version="1.1"
    id="svg132"
    inkscape:version="0.92.4 (unknown)"
-   sodipodi:docname="simple-example.svg">
+   sodipodi:docname="simple-example-bug.svg">
   <defs
      id="defs126" />
   <sodipodi:namedview
@@ -27,17 +27,18 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1"
      inkscape:cx="396.28571"
-     inkscape:cy="851.42857"
+     inkscape:cy="891.42857"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1366"
      inkscape:window-height="740"
-     inkscape:window-x="255"
-     inkscape:window-y="1080"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      units="px"
-     inkscape:snap-global="false" />
+     inkscape:snap-global="true"
+     inkscape:snap-page="true" />
   <metadata
      id="metadata129">
     <rdf:RDF>
@@ -46,7 +47,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -56,7 +57,7 @@
      id="layer1">
     <g
        id="g3865"
-       transform="translate(-17.235714,-18.861012)">
+       transform="translate(-26.401609,-34.93018)">
       <title
          id="title3875">Screen1</title>
       <rect
@@ -106,7 +107,7 @@
     </g>
     <g
        id="g3873"
-       transform="matrix(0.99999823,0,0,1.0005768,91.470854,-17.820093)">
+       transform="matrix(0.99999823,0,0,1.0005768,99.007381,-32.567625)">
       <title
          id="title3877">Screen2</title>
       <rect
