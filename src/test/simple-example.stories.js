@@ -48,9 +48,9 @@ export const actual = () => {
   return container;
 };
 
-export const withBug = () => {
+export const nestedInstanceCorrectlyPositioned = () => {
   const container = document.createElement('div');
-  container.innerHTML = "<p>TODO: Fix transform displacement edge case bug where the button element was copied off Screen1 and pasted into Screen2.</p>"
+  container.innerHTML = "<p>Named instances can have (one) translate or matrix operation on the group.</p>"
 
   const stageElement = document.createElement('div');
 

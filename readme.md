@@ -49,8 +49,9 @@ To produce:
 
 ![Simple Example](assets/simple-example.gif)
 
-There are also the following fields exposed:
+There are also the following fields exposed on the `DisplayObject`:
 
+* `_node`
 * `x`
 * `y`
 * `width`
@@ -59,6 +60,11 @@ There are also the following fields exposed:
 * `addEventListener`
 * `addChild`
 * `removeChild`
+
+This are also the following convenience functions/objects on `helpers`:
+
+* `showClickableAreas()`: shows which nodes have `buttonMode` set to true with hotspots
+* `stageRect`: plain rect DisplayObject with stage dimensions that can be used as a backdrop for modals/dialogs by setting its `_node.style.opacity` and `_node.style.fill`
 
 ### Embedding in HTML
 

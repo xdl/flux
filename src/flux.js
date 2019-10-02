@@ -1,19 +1,19 @@
-const INKSCAPE_TITLE_TAG = 'title'
-const CLASS_HINTBOX = 'fadey'
-const HINT_FADEOUT_SECONDS = 0.6
+const INKSCAPE_TITLE_TAG = 'title';
+const CLASS_HINTBOX = 'fadey';
+const HINT_FADEOUT_SECONDS = 0.6;
 
 //dom attributes
-const REPLICANT_MARKER = 'replicant'
-const BUTTON_MODE = 'buttonMode'
+const REPLICANT_MARKER = 'replicant';
+const BUTTON_MODE = 'buttonMode';
 
-const SVGNS = "http://www.w3.org/2000/svg"
-const SVGNSX = "http://www.w3.org/1999/xlink"
-const {
+const SVGNS = "http://www.w3.org/2000/svg";
+const SVGNSX = "http://www.w3.org/1999/xlink";
+
+import {
   decomposeTransformAttribute,
   calculateNodeTranslation,
   getTransformAttributeStringList,
-  parseTranslateAttribute
-} = require('./lib/decompose.js')
+} from './lib/decompose';
 
 const getTitle = (elem) => {
   for (let i = 0; i < elem.children.length; i++) {
@@ -35,7 +35,7 @@ const wrapInstances = (node, node_name) => {
     const t_list = getTransformAttributeStringList(elem);
 
     if (t_list.length !== 1) {
-      console.warn('translate assumption on child of DisplayObject faulty');
+      console.info('TODO: examine assumption on getting the translation offset for the child of DisplayObject');
     }
 
     const translate = decomposeTransformAttribute(t_list[0]).translate;
@@ -101,34 +101,34 @@ const DisplayObject = (dom_node, transform_offsets, name, x = 0, y = 0) => {
     _children: children,
     _name: name, //for debug
     get x() {
-      return x
+      return x;
     },
     set x(_x) {
-      x = _x
-      applyTransformAttribute()
+      x = _x;
+      applyTransformAttribute();
     },
     get y() {
-      return y
+      return y;
     },
     set y(_y) {
-      y = _y
-      applyTransformAttribute()
+      y = _y;
+      applyTransformAttribute();
     },
     get width() {
-      return dom_node.getBBox().width
+      return dom_node.getBBox().width;
     },
     get height() {
-      return dom_node.getBBox().height
+      return dom_node.getBBox().height;
     },
     get buttonMode() {
-      return buttonMode
+      return buttonMode;
     },
     set buttonMode(_buttonMode) {
-      buttonMode = _buttonMode
+      buttonMode = _buttonMode;
       if (buttonMode) { //for the dom traversal to pick up on when clicked
-        dom_node.setAttribute(BUTTON_MODE, true)
+        dom_node.setAttribute(BUTTON_MODE, true);
       } else {
-        dom_node.removeAttribute(BUTTON_MODE)
+        dom_node.removeAttribute(BUTTON_MODE);
       }
       applyStyling()
     },
@@ -216,7 +216,7 @@ const directInkscapeChildIsLayer = (node) => {
 
 const Library = (inkscape_node) => {
 
-  const directory = {}
+  const directory = {};
   //First use of title elements:
   //1. As a class that's been 'Export for Actionscript'd, if it's directly exposed in a layer
   for (let i = 0; i < inkscape_node.children.length; i++) {
@@ -240,21 +240,32 @@ const Library = (inkscape_node) => {
     }
   }
   return directory;
-}
+};
 
 const createStageNode = (inkscape_container) => {
-  const viewBox = inkscape_container.getAttribute('viewBox')
-  const stageWidth = inkscape_container.getAttribute('width')
-  const stageHeight = inkscape_container.getAttribute('height')
-  const stage_node = document.createElementNS(SVGNS, "svg")
-  stage_node.setAttributeNS(null, 'viewBox', viewBox)
-  stage_node.setAttributeNS(null, 'width', stageWidth)
-  stage_node.setAttributeNS(null, 'height', stageHeight)
-  return stage_node
-}
+  const viewBox = inkscape_container.getAttribute('viewBox');
+  const stageWidth = inkscape_container.getAttribute('width');
+  const stageHeight = inkscape_container.getAttribute('height');
+  const stage_node = document.createElementNS(SVGNS, "svg");
+  stage_node.setAttributeNS(null, 'viewBox', viewBox);
+  stage_node.setAttributeNS(null, 'width', stageWidth);
+  stage_node.setAttributeNS(null, 'height', stageHeight);
+  return stage_node;
+};
+
+const generateStageRect = (inkscape_container) => {
+  const node = document.createElementNS(SVGNS, 'rect');
+  node.style.opacity = 1;
+  node.style.fill = '#000000';
+  node.setAttribute('width', inkscape_container.getAttribute('width'));
+  node.setAttribute('height', inkscape_container.getAttribute('height'));
+  node.setAttribute('x', 0);
+  node.setAttribute('y', 0);
+  return node;
+};
 
 const generateHintBox = (bbox, transform_attributes) => {
-  const node = document.createElementNS(SVGNS, 'rect')
+  const node = document.createElementNS(SVGNS, 'rect');
   node.style.opacity = 1;
   node.style.fill = '#851422';
   node.style.stroke = '#431422';
@@ -279,7 +290,7 @@ const augmentWithHints = (display_object) => {
     return () => {
       parent_node.removeChild(hint_node);
     }
-  }
+  };
 
   const showClickableAreas = () => {
 
@@ -297,10 +308,10 @@ const augmentWithHints = (display_object) => {
         to_visit.push(child);
       }
     }
-  }
+  };
 
   //init
-  display_object.addEventListener('click', showClickableAreas)
+  display_object.addEventListener('click', showClickableAreas);
 
   return Object.assign(display_object, {
       _showClickableAreas: showClickableAreas,
@@ -338,13 +349,18 @@ const fluxInit = (stage_element, inkscape_container) => {
 export default {
   version: '0.0.1',
   init: (stage_element, library_element, callback) => {
+
     const inkscape_container = library_element.contentDocument.firstElementChild;
 
-    //TODO: put this header mutation into a separate function
-    //adding some keyframe data. We'll need this when we don't want to manually do stuff to the index.html of the demo
-    const style = document.createElement('style');
-    style.type = 'text/css';
-    const hints_css = `
+    const KEYFRAME_STYLE_ID = 'flux-0.0.1-keyframe';
+
+    if (!document.getElementById(KEYFRAME_STYLE_ID)) {
+
+      const style = document.createElement('style');
+      style.id = KEYFRAME_STYLE_ID;
+      style.type = 'text/css';
+
+      const hints_css = `
       .${CLASS_HINTBOX} {
         animation: fadeInOut ${HINT_FADEOUT_SECONDS}s ease-out forwards;
       }
@@ -352,9 +368,9 @@ export default {
         0%, 100% { opacity: 0; }
         50% { opacity: 1; }
       }`;
-    style.innerHTML = hints_css;
-    document.getElementsByTagName('head')[0].appendChild(style);
-
+      style.innerHTML = hints_css;
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
 
     const {
       stage,
@@ -362,9 +378,11 @@ export default {
     } = fluxInit(stage_element, inkscape_container);
 
     const helpers = {
-      showClickableAreas: stage._showClickableAreas
+      showClickableAreas: stage._showClickableAreas,
+      // For dialog
+      stageRect: DisplayObject(generateStageRect(inkscape_container), [], 'stageRect')
     };
 
     return callback(stage, library, helpers);
   }
-}
+};
