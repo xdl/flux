@@ -26,16 +26,24 @@ const getTitle = (elem) => {
 }
 
 const wrapInstances = (node, node_name) => {
+
   const instances = {};
+
   //Second use of the title element:
   //2. As an exposed instance name in an instantiated class from the Library
   const displayObjectify = (elem, title) => {
     const t_list = getTransformAttributeStringList(elem);
-    //assume the last one has a translation transformation:
-    const translate = parseTranslateAttribute(t_list[0]);
+
+    if (t_list.length !== 1) {
+      console.warn('translate assumption on child of DisplayObject faulty');
+    }
+
+    const translate = decomposeTransformAttribute(t_list[0]).translate;
+
     const display_object = augmentWithInstances(DisplayObject(elem, t_list.slice(1), name, translate[0], translate[1]), node_name);
     return display_object;
   }
+
   const to_visit = [node];
   while (to_visit.length > 0) {
     const visiting = to_visit.pop();
@@ -55,7 +63,9 @@ const wrapInstances = (node, node_name) => {
 }
 
 const augmentWithInstances = (display_object, name) => {
+
   const instances = wrapInstances(display_object._node, name);
+
   for (let i_name of Object.keys(instances)) {
     const instance = instances[i_name];
     display_object._children.push(instance);
@@ -72,15 +82,15 @@ const DisplayObject = (dom_node, transform_offsets, name, x = 0, y = 0) => {
   let buttonMode = false;
 
   const applyStyling = () => {
-    dom_node.style.cursor = buttonMode ? 'pointer' : 'default'
+    dom_node.style.cursor = buttonMode ? 'pointer' : 'default';
   };
 
   const applyTransformAttribute = () => {
-    const transform = `translate(${x}, ${y})`
+    const transform = `translate(${x}, ${y})`;
     dom_node.setAttribute('transform', `
       ${transform}
       ${transform_offsets.join('')}
-    `)
+    `);
   };
 
   //init:
@@ -146,11 +156,13 @@ const DisplayObject = (dom_node, transform_offsets, name, x = 0, y = 0) => {
 }
 
 const _instantiateNode = (elem, inkscape_node) => {
+
   const instantiate = (n) => {
     const clone = n.cloneNode(true);
     postOrder(clone);
     return clone;
   }
+
   const replaceChild = (parent, use_node) => {
     const transform_string = use_node.getAttribute('transform');
     const use_transform = decomposeTransformAttribute(transform_string);
@@ -179,6 +191,7 @@ const _instantiateNode = (elem, inkscape_node) => {
 
     parent.replaceChild(replaced_node, use_node);
   }
+
   const postOrder = (p) => {
     for (let i = 0; i < p.children.length; i++) {
       const child = p.children[i];
@@ -202,6 +215,7 @@ const directInkscapeChildIsLayer = (node) => {
 }
 
 const Library = (inkscape_node) => {
+
   const directory = {}
   //First use of title elements:
   //1. As a class that's been 'Export for Actionscript'd, if it's directly exposed in a layer
@@ -212,8 +226,9 @@ const Library = (inkscape_node) => {
         const title = getTitle(child_node);
 
         if (title) {
-          const bbox = child_node.getBBox()
+          const bbox = child_node.getBBox();
           directory[title] = () => {
+
             const node = instantiateNode(child_node, title, inkscape_node);
             const transform_offsets = [`translate(${-bbox.x}, ${-bbox.y})`];
 

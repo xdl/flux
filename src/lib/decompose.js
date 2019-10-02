@@ -80,7 +80,7 @@ export const calculateNodeTranslation = (node) => {
   }
 }
 
-//`translate(75.961154,94.509808)
+//translate(75.961154,94.509808)
 //scale(1,1)
 //translate(-32.239327,-64.478654)` → [t...,s..., t...]
 const transformAttributeToStringList = (transform_string) => {
