@@ -41,6 +41,7 @@ export const actual = () => {
   inkscapeElement.setAttribute('type', 'image/svg+xml');
   inkscapeElement.setAttribute('data', 'simple-example.svg');
   inkscapeElement.addEventListener('load', init(stageElement, inkscapeElement));
+  inkscapeElement.style.opacity = 0;
 
   container.appendChild(stageElement);
   container.appendChild(inkscapeElement);
@@ -58,6 +59,7 @@ export const nestedInstanceCorrectlyPositioned = () => {
   inkscapeElement.setAttribute('type', 'image/svg+xml');
   inkscapeElement.setAttribute('data', 'simple-example-bug.svg');
   inkscapeElement.addEventListener('load', init(stageElement, inkscapeElement));
+  inkscapeElement.style.opacity = 0;
 
   container.appendChild(stageElement);
   container.appendChild(inkscapeElement);

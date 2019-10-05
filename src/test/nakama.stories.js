@@ -169,6 +169,7 @@ export const actual = () => {
   const inkscapeElement = document.createElement('object');
   inkscapeElement.setAttribute('type', 'image/svg+xml');
   inkscapeElement.setAttribute('data', 'nakama.svg');
+  inkscapeElement.style.opacity = 0;
 
   inkscapeElement.addEventListener('load', init(inkscapeElement, stageElement));
 

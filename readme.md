@@ -72,7 +72,7 @@ There is a minified drop-in version of FlUX in `bin/flux`, which can be added to
     
     npm install --production
 
-    npm run serve-examples
+    npm run examples
 
 ### Development
 
@@ -99,6 +99,6 @@ The viewport of the stage is set to the same dimensions as the Inkscape canvas, 
 
 ### BBbox Computation
 
-The Inkscape SVG needs to be visible (at least initially) in order to calculate the offsets of object groups so that they can be set to zero.
+The Inkscape SVG needs to be rendered (at least initially; can be styled at 0 opacity) in order to calculate the offsets of object groups so that they can be set to zero.
 
 If you want to hide the Inkscape SVG, make sure to do this after instantiating FlUX, e.g. see the examples for when to do `inkscapeSvgElement.style.display = 'none'`.

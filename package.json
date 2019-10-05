@@ -2,7 +2,7 @@
   "name": "flux",
   "scripts": {
     "storybook": "start-storybook -s ./src/test",
-    "serve-examples": "cp bin/flux.js examples/ && http-server examples -o",
+    "examples": "cp bin/flux.js examples/ && http-server examples -o",
     "build": "webpack --config webpack.prod.js"
   },
   "dependencies": {
