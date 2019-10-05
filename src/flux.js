@@ -16,154 +16,30 @@ import {
 } from './lib/decompose';
 
 const getTitle = (elem) => {
+
   for (let i = 0; i < elem.children.length; i++) {
+
     const child = elem.children[i];
+
     if (child.tagName === INKSCAPE_TITLE_TAG) {
       return child.innerHTML;
     }
   }
+
   return null;
-}
-
-const wrapInstances = (node, node_name) => {
-
-  const instances = {};
-
-  //Second use of the title element:
-  //2. As an exposed instance name in an instantiated class from the Library
-  const displayObjectify = (elem, title) => {
-    const t_list = getTransformAttributeStringList(elem);
-
-    if (t_list.length !== 1) {
-      console.info('TODO: examine assumption on getting the translation offset for the child of DisplayObject');
-    }
-
-    const translate = decomposeTransformAttribute(t_list[0]).translate;
-
-    const display_object = augmentWithInstances(DisplayObject(elem, t_list.slice(1), name, translate[0], translate[1]), node_name);
-    return display_object;
-  }
-
-  const to_visit = [node];
-  while (to_visit.length > 0) {
-    const visiting = to_visit.pop();
-    for (let i = 0; i < visiting.children.length; i++) {
-      const child = visiting.children[i];
-      const title = getTitle(child);
-      if (title) {
-        const display_object = displayObjectify(child, title);
-        instances[title] = display_object;
-      }
-      if (!child.hasAttribute(REPLICANT_MARKER)) {
-        to_visit.push(child);
-      }
-    }
-  }
-  return instances;
-}
-
-const augmentWithInstances = (display_object, name) => {
-
-  const instances = wrapInstances(display_object._node, name);
-
-  for (let i_name of Object.keys(instances)) {
-    const instance = instances[i_name];
-    display_object._children.push(instance);
-  }
-  return Object.assign(display_object,
-                       instances);
-}
-
-const DisplayObject = (dom_node, transform_offsets, name, x = 0, y = 0) => {
-
-  //initial values
-  const children = [];
-
-  let buttonMode = false;
-
-  const applyStyling = () => {
-    dom_node.style.cursor = buttonMode ? 'pointer' : 'default';
-  };
-
-  const applyTransformAttribute = () => {
-    const transform = `translate(${x}, ${y})`;
-    dom_node.setAttribute('transform', `
-      ${transform}
-      ${transform_offsets.join('')}
-    `);
-  };
-
-  //init:
-  applyTransformAttribute();
-
-  return Object.assign({ //base
-    _node: dom_node,
-    _children: children,
-    _name: name, //for debug
-    get x() {
-      return x;
-    },
-    set x(_x) {
-      x = _x;
-      applyTransformAttribute();
-    },
-    get y() {
-      return y;
-    },
-    set y(_y) {
-      y = _y;
-      applyTransformAttribute();
-    },
-    get width() {
-      return dom_node.getBBox().width;
-    },
-    get height() {
-      return dom_node.getBBox().height;
-    },
-    get buttonMode() {
-      return buttonMode;
-    },
-    set buttonMode(_buttonMode) {
-      buttonMode = _buttonMode;
-      if (buttonMode) { //for the dom traversal to pick up on when clicked
-        dom_node.setAttribute(BUTTON_MODE, true);
-      } else {
-        dom_node.removeAttribute(BUTTON_MODE);
-      }
-      applyStyling()
-    },
-    addEventListener: (eventType, fn, useCapture = false) => { //useCapture default is false
-      dom_node.addEventListener(eventType, (e) => {
-        e.stopPropagation() //stops the hint from bubbling any further to the hint listener on the stage
-        fn()
-      })
-    },
-    removeChild: (display_object) => {
-      const index = children.indexOf(display_object)
-      if (index > -1) {
-        children.splice(index, 1)
-        dom_node.removeChild(display_object._node)
-      }
-    },
-    addChild: (display_object) => {
-      const index = children.indexOf(display_object)
-      if (index === -1) {
-        children.push(display_object)
-        dom_node.appendChild(display_object._node)
-      }
-    }
-  });
 }
 
 const _instantiateNode = (elem, inkscape_node) => {
 
   const instantiate = (n) => {
+
     const clone = n.cloneNode(true);
     postOrder(clone);
     return clone;
   }
 
   const replaceChild = (parent, use_node) => {
+
     const transform_string = use_node.getAttribute('transform');
     const use_transform = decomposeTransformAttribute(transform_string);
     const replacement_id = use_node.getAttribute('xlink:href').slice(1);
@@ -190,17 +66,20 @@ const _instantiateNode = (elem, inkscape_node) => {
     }
 
     parent.replaceChild(replaced_node, use_node);
-  }
+  };
 
   const postOrder = (p) => {
+
     for (let i = 0; i < p.children.length; i++) {
+
       const child = p.children[i];
       postOrder(child);
+
       if (child.tagName === 'use') {
         replaceChild(p, child);
       }
     }
-  }
+  };
 
   return instantiate(elem);
 };
@@ -212,21 +91,169 @@ const instantiateNode = (elem, name, inkscape_node) => {
 
 const directInkscapeChildIsLayer = (node) => {
   return node.tagName === 'g';
-}
+};
 
-const Library = (inkscape_node) => {
+const createDisplayObject = (scaleX, scaleY) => (dom_node, transform_offsets, name, x = 0, y = 0) => {
+
+  //initial values
+  const children = [];
+
+  let buttonMode = false;
+  const width = dom_node.getBBox().width;
+  const height = dom_node.getBBox().height;
+
+  const applyStyling = () => {
+    dom_node.style.cursor = buttonMode ? 'pointer' : 'default';
+  };
+
+  const applyTransformAttribute = () => {
+    const transform = `translate(${x}, ${y})`;
+    dom_node.setAttribute('transform', `
+      ${transform}
+      ${transform_offsets.join('')}
+    `);
+  };
+
+  //init:
+  applyTransformAttribute();
+
+  return Object.assign({ //base
+    _node: dom_node,
+    _children: children,
+    _name: name, //for debug
+    get x() {
+      return x/scaleX;
+    },
+    set x(_x) {
+      x = _x * scaleX;
+      applyTransformAttribute();
+    },
+    get y() {
+      return y/scaleY;
+    },
+    set y(_y) {
+      y = _y * scaleY
+      applyTransformAttribute();
+    },
+    get width() {
+      return dom_node.getBBox().width/scaleX;
+    },
+    get height() {
+      return dom_node.getBBox().height/scaleY;
+    },
+    get buttonMode() {
+      return buttonMode;
+    },
+    set buttonMode(_buttonMode) {
+      buttonMode = _buttonMode;
+      if (buttonMode) { //for the dom traversal to pick up on when clicked
+        dom_node.setAttribute(BUTTON_MODE, true);
+      } else {
+        dom_node.removeAttribute(BUTTON_MODE);
+      }
+      applyStyling();
+    },
+    addEventListener: (eventType, fn, useCapture = false) => { //useCapture default is false
+      dom_node.addEventListener(eventType, (e) => {
+        e.stopPropagation(); //stops the hint from bubbling any further to the hint listener on the stage
+        fn();
+      });
+    },
+    removeChild: (display_object) => {
+      const index = children.indexOf(display_object)
+      if (index > -1) {
+        children.splice(index, 1);
+        dom_node.removeChild(display_object._node);
+      }
+    },
+    addChild: (display_object) => {
+
+      const index = children.indexOf(display_object);
+
+      if (index === -1) {
+        children.push(display_object);
+        dom_node.appendChild(display_object._node);
+      }
+    }
+  });
+};
+
+const Library = (inkscape_node, DisplayObject) => {
+
+  const wrapInstances = (node, node_name) => {
+
+    const instances = {};
+
+    //Second use of the title element:
+    //2. As an exposed instance name in an instantiated class from the Library
+    const displayObjectify = (elem, title) => {
+
+      const t_list = getTransformAttributeStringList(elem);
+
+      if (t_list.length !== 1) {
+        console.info('TODO: examine assumption on getting the translation offset for the child of DisplayObject');
+      }
+
+      const translate = decomposeTransformAttribute(t_list[0]).translate;
+
+      const display_object = augmentWithInstances(
+        DisplayObject(elem, t_list.slice(1), node_name, translate[0], translate[1]), node_name);
+
+      return display_object;
+    }
+
+    const to_visit = [node];
+
+    while (to_visit.length > 0) {
+
+      const visiting = to_visit.pop();
+
+      for (let i = 0; i < visiting.children.length; i++) {
+
+        const child = visiting.children[i];
+        const title = getTitle(child);
+
+        if (title) {
+          const display_object = displayObjectify(child, title);
+          instances[title] = display_object;
+        }
+
+        if (!child.hasAttribute(REPLICANT_MARKER)) {
+          to_visit.push(child);
+        }
+      }
+    }
+    return instances;
+  };
+
+  const augmentWithInstances = (display_object, name) => {
+
+    const instances = wrapInstances(display_object._node, name);
+
+    for (let i_name of Object.keys(instances)) {
+      const instance = instances[i_name];
+      display_object._children.push(instance);
+    }
+
+    return Object.assign(display_object, instances);
+  };
 
   const directory = {};
   //First use of title elements:
   //1. As a class that's been 'Export for Actionscript'd, if it's directly exposed in a layer
   for (let i = 0; i < inkscape_node.children.length; i++) {
+
     if (directInkscapeChildIsLayer(inkscape_node.children[i])) { //if layer
+
       for (let j = 0; j < inkscape_node.children[i].children.length; j++) {
+
         const child_node = inkscape_node.children[i].children[j];
         const title = getTitle(child_node);
 
         if (title) {
+
           const bbox = child_node.getBBox();
+
           directory[title] = () => {
 
             const node = instantiateNode(child_node, title, inkscape_node);
@@ -243,10 +270,16 @@ const Library = (inkscape_node) => {
 };
 
 const createStageNode = (inkscape_container) => {
+
   const viewBox = inkscape_container.getAttribute('viewBox');
+
   const stageWidth = inkscape_container.getAttribute('width');
+
   const stageHeight = inkscape_container.getAttribute('height');
   const stage_node = document.createElementNS(SVGNS, "svg");
+
+  const viewBoxHack = `0 0 ${stageWidth} ${stageHeight}`
+
   stage_node.setAttributeNS(null, 'viewBox', viewBox);
   stage_node.setAttributeNS(null, 'width', stageWidth);
   stage_node.setAttributeNS(null, 'height', stageHeight);
@@ -279,7 +312,7 @@ const generateHintBox = (bbox, transform_attributes) => {
   node.setAttribute('class', CLASS_HINTBOX);
   node.setAttribute('transform', transform_attributes);
   return node;
-}
+};
 
 const augmentWithHints = (display_object) => {
 
@@ -295,16 +328,22 @@ const augmentWithHints = (display_object) => {
   const showClickableAreas = () => {
 
     //do a tree search
-    const to_visit = [display_object._node]
+    const to_visit = [display_object._node];
+
     while (to_visit.length > 0) {
+
       const visiting = to_visit.pop();
+
       for (let i = 0; i < visiting.children.length; i++) {
+
         const child = visiting.children[i];
+
         if (child.getAttribute(BUTTON_MODE)) {
           const hint_box = generateHintBox(child.getBBox(), child.getAttribute('transform'));
           visiting.appendChild(hint_box);
           window.setTimeout(createRemoveHintNodeFn(visiting, hint_box),HINT_FADEOUT_SECONDS * 1000);
         }
+
         to_visit.push(child);
       }
     }
@@ -325,8 +364,9 @@ const augmentWithHints = (display_object) => {
     })
 }
 
-const fluxInit = (stage_element, inkscape_container) => {
-  const stage_node = createStageNode(inkscape_container)
+const fluxInit = (stage_element, inkscape_container, DisplayObject) => {
+
+  const stage_node = createStageNode(inkscape_container);
 
   for (let i = 0; i < inkscape_container.children.length; i++) {
     const child = inkscape_container.children[i];
@@ -337,8 +377,21 @@ const fluxInit = (stage_element, inkscape_container) => {
   }
   stage_element.appendChild(stage_node);
 
-  const library = Library(inkscape_container);
+  const library = Library(inkscape_container, DisplayObject);
+
   const stage = augmentWithHints(DisplayObject(stage_node, [], 'stage'));
+
+  // Overwrite width and height property to not do scale
+  Object.defineProperty(stage, 'width', {
+    get: () => {
+      return inkscape_container.getAttribute('width')
+    }
+  });
+  Object.defineProperty(stage, 'height', {
+    get: () => {
+      return inkscape_container.getAttribute('height')
+    }
+  });
 
   return {
     stage,
@@ -351,6 +404,11 @@ export default {
   init: (stage_element, library_element, callback) => {
 
     const inkscape_container = library_element.contentDocument.firstElementChild;
+    const viewBox = inkscape_container.getAttribute('viewBox');
+    const scaleX = viewBox.split(' ')[2]/inkscape_container.getAttribute('width');
+    const scaleY = viewBox.split(' ')[3]/inkscape_container.getAttribute('height');
+
+    const DisplayObject = createDisplayObject(scaleX, scaleY);
 
     const KEYFRAME_STYLE_ID = 'flux-0.0.1-keyframe';
 
@@ -375,7 +433,7 @@ export default {
     const {
       stage,
       library
-    } = fluxInit(stage_element, inkscape_container);
+    } = fluxInit(stage_element, inkscape_container, DisplayObject);
 
     const helpers = {
       showClickableAreas: stage._showClickableAreas,
